@@ -1,0 +1,26 @@
+.card-item {
+    /* Initial background properties */
+    background-size: 100%;
+    background-position: center;
+    transition: font-size 0.5s ease, background-size 0.5s ease, background-position 0.5s ease;
+}
+
+.card-item .card-item-text {
+    transform: translateY(150px);
+    transition: transform 0.5s ease;
+}
+
+
+.card-item:hover {
+    /* Zoom in the background image on hover */
+    background-size: 110%; /* Increase the size for zoom effect */
+    background-position: center; /* Ensure the position stays centered */
+}
+
+.card-item:hover .card-item-text {
+    transform: translateY(0);
+}
+
+.card-item:hover .play-icon{
+    font-size: 28px;
+}
