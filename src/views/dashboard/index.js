@@ -35,9 +35,16 @@ const Dashboard = () => {
         <Grid container spacing={gridSpacing}>
 
             <Grid my={2} item xs={12}>
-            <Typography my={2} variant="h2" gutterBottom>
+
+            <Box my={2}>
+            <Typography className='p-0 m-0'  variant="h2" gutterBottom>
                 Timeless Dreams Smiles
             </Typography>
+
+            <Typography variant="h6" gutterBottom>
+               <i>Generated : Sat, Jun 8, 2024 10:40 PM</i>
+            </Typography>
+            </Box>
 
                 <Grid container spacing={gridSpacing}>
                     {music.map((m,index) => (
@@ -51,9 +58,17 @@ const Dashboard = () => {
 
 
             <Grid my={2} item xs={12}>
-            <Typography my={2} variant="h2" gutterBottom>
+
+                
+            <Box my={2}>
+            <Typography className='p-0 m-0'  variant="h2" gutterBottom>
                 Timeless Dreams Smiles
             </Typography>
+
+            <Typography variant="h6" gutterBottom>
+               <i>Generated : Sat, Jun 8, 2024 10:40 PM</i>
+            </Typography>
+            </Box>
 
                 <Grid container spacing={gridSpacing}>
                     {music.map((m,index) => (

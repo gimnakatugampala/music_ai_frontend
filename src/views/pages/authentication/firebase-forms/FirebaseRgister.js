@@ -137,7 +137,7 @@ const FirebaseRgister = ({className, ...rest}) => {
     };
 
     useEffect(() => {
-        changePassowd('123456');
+        changePassowd('');
     }, []);
 
     return (
@@ -216,7 +216,7 @@ const FirebaseRgister = ({className, ...rest}) => {
                                     margin="normal"
                                     name="fname"
                                     type="text"
-                                    defaultValue="Joseph"
+                                    // defaultValue="Joseph"
                                     variant="outlined"
                                     className={classes.loginput}
                                 />
@@ -228,7 +228,7 @@ const FirebaseRgister = ({className, ...rest}) => {
                                     margin="normal"
                                     name="lname"
                                     type="text"
-                                    defaultValue="Doe"
+                                    // defaultValue="Doe"
                                     variant="outlined"
                                     className={classes.loginput}
                                 />
@@ -244,7 +244,7 @@ const FirebaseRgister = ({className, ...rest}) => {
                             <OutlinedInput
                                 id="outlined-adornment-email-register"
                                 type="email"
-                                value={values.email}
+                                // value={values.email}
                                 name="email"
                                 onBlur={handleBlur}
                                 onChange={handleChange}
@@ -273,7 +273,7 @@ const FirebaseRgister = ({className, ...rest}) => {
                             <OutlinedInput
                                 id="outlined-adornment-password-register"
                                 type={showPassword ? 'text' : 'password'}
-                                value={values.password}
+                                // value={values.password}
                                 name="password"
                                 onBlur={handleBlur}
                                 onChange={(e) => {

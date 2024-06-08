@@ -60,9 +60,6 @@ const Register = () => {
                     justifyContent="space-between"
                 >
                     <Grid item xs={12} sx={{mt: '40px', width: '100%', textAlign: 'center'}}>
-                        {/* <RouterLink to="#">
-                            <img alt="Auth method" src={logo} width="100" />
-                        </RouterLink> */}
                         <Logo />
                     </Grid>
                     <Grid item xs={12} container justifyContent="center" alignItems="center">
