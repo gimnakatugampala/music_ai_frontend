@@ -109,7 +109,7 @@ const MainLayout = ({children, showBreadcrumb = true}) => {
                 <div>{children}</div>
             </main>
 
-            {isVisible && <MusicPlayer />}
+             <MusicPlayer />
 
             
         </div>
