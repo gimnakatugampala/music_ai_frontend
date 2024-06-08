@@ -13,3 +13,16 @@ export const SET_FONT_FAMILY = '@customization/SET_FONT_FAMILY';
 export const SET_BORDER_RADIUS = '@customization/SET_BORDER_RADIUS';
 
 export const SNACKBAR_OPEN = '@snackbar/SNACKBAR_OPEN';
+
+
+// Music PLayer
+export const SHOW_MUSIC_PLAYER = 'SHOW_MUSIC_PLAYER';
+export const HIDE_MUSIC_PLAYER = 'HIDE_MUSIC_PLAYER';
+
+export const showMusicPlayer = () => ({
+    type: SHOW_MUSIC_PLAYER,
+  });
+  
+  export const hideMusicPlayer = () => ({
+    type: HIDE_MUSIC_PLAYER,
+  });

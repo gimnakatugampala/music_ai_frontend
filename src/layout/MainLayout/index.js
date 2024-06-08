@@ -65,6 +65,8 @@ const MainLayout = ({children, showBreadcrumb = true}) => {
     const classes = useStyles();
     const theme = useTheme();
     const matchUpMd = useMediaQuery(theme.breakpoints.up('md'));
+    const isVisible = useSelector((state) => state.musicPlayer.isVisible);
+
 
     // Handle left drawer
     const leftDrawerOpened = useSelector((state) => state.customization.opened);
@@ -73,11 +75,17 @@ const MainLayout = ({children, showBreadcrumb = true}) => {
         dispatch({type: 'SET_MENU', opened: !leftDrawerOpened});
     };
 
+    
+
+
     React.useEffect(() => {
         const openLeftDrawerState = (val) => {
             dispatch({type: 'SET_MENU', opened: val});
         };
         openLeftDrawerState(matchUpMd);
+
+        console.log(isVisible)
+
     }, [dispatch, matchUpMd]);
 
     return (
@@ -101,8 +109,9 @@ const MainLayout = ({children, showBreadcrumb = true}) => {
                 <div>{children}</div>
             </main>
 
-                <MusicPlayer />
+            {isVisible && <MusicPlayer />}
 
+            
         </div>
     );
 };

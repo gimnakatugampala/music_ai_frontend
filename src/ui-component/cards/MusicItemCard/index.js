@@ -12,6 +12,8 @@ import ArchiveTwoToneIcon from '@material-ui/icons/ArchiveOutlined';
 import PlayCircleFilledIcon from '@material-ui/icons/PlayCircleFilled';
 
 import './styles.css'
+import { showMusicPlayer } from '../../../store/actions';
+import { useDispatch } from 'react-redux';
 
 const useStyles = makeStyles((theme) => ({
     card: {
@@ -44,11 +46,16 @@ const useStyles = makeStyles((theme) => ({
 
 const MusicItemCard = ({item}) => {
     const classes = useStyles();
+      const dispatch = useDispatch();
+
+    const handleCardClick = () => {
+        dispatch(showMusicPlayer());
+    };
 
 
 
     return (
-        <Card style={{ backgroundImage: `url(${item.img})` }} className={[classes.card,'card-item']}>
+        <Card onClick={handleCardClick} style={{ backgroundImage: `url(${item.img})` }} className={[classes.card,'card-item']}>
         <CardContent className={classes.content}>
             <Grid container direction="column" style={{ flexGrow: 1 }}>
                 <Grid item>
