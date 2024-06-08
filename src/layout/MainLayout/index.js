@@ -102,7 +102,7 @@ const MainLayout = ({children, showBreadcrumb = true}) => {
             </main>
 
                 <MusicPlayer />
-                
+
         </div>
     );
 };

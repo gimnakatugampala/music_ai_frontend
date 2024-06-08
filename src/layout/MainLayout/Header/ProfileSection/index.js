@@ -31,6 +31,7 @@ import UpgradePlanCard from '../../../../ui-component/cards/UpgradePlanCard';
 import User1 from './../../../../assets/images/users/user-round.svg';
 import LockOpenIcon from '@material-ui/icons/LockOpen';
 import VpnKeyIcon from '@material-ui/icons/VpnKey';
+import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
 
 const useStyles = makeStyles((theme) => ({
     navContainer: {
@@ -206,7 +207,7 @@ const ProfileSection = () => {
                                        
                                       
                                         <PerfectScrollbar className={classes.ScrollHeight}>
-                                         
+                                        
 
                                             <List component="nav" className={classes.navContainer}>
                                                 <ListItem
@@ -230,7 +231,7 @@ const ProfileSection = () => {
                                                     onClick={(e) => window.location.href = "/register"}
                                                 >
                                                     <ListItemIcon>
-                                                        <VpnKeyIcon stroke={1.5} size="1.3rem" />
+                                                        <PersonOutlineIcon stroke={1.5} size="1.3rem" />
                                                     </ListItemIcon>
                                                     <ListItemText primary={<Typography variant="body2">Register</Typography>} />
                                                 </ListItem>
