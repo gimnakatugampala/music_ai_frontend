@@ -181,17 +181,21 @@ const FirebaseRgister = ({className, ...rest}) => {
 
             <Formik
                 initialValues={{
-                    email: 'info@codedthemes.com',
-                    password: '123456',
+                    fname:'',
+                    lname:'',
+                    email: '',
+                    password: '',
                     submit: null
                 }}
                 validationSchema={Yup.object().shape({
+                    fname: Yup.string().max(255).required('First Name is required'),
+                    lname: Yup.string().max(255).required('Last Name is required'),
                     email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
                     password: Yup.string().max(255).required('Password is required')
                 })}
                 onSubmit={async (values, {setErrors, setStatus, setSubmitting}) => {
                     try {
-
+                        console.log('Form Values:', values);
                         if (scriptedRef.current) {
                             setStatus({success: true});
                             setSubmitting(false);
@@ -212,26 +216,56 @@ const FirebaseRgister = ({className, ...rest}) => {
                             <Grid item xs={12} sm={6}>
                                 <TextField
                                     fullWidth
+                                    error={Boolean(touched.fname && errors.fname)}
                                     label="First Name"
                                     margin="normal"
                                     name="fname"
                                     type="text"
-                                    // defaultValue="Joseph"
+                                    onBlur={handleBlur}
+                                    onChange={handleChange}
+                                    inputProps={{
+                                        classes: {
+                                            notchedOutline: classes.notchedOutline
+                                        }
+                                    }}
+                                    value={values.fname}
                                     variant="outlined"
                                     className={classes.loginput}
                                 />
+                                {touched.fname && errors.fname && (
+                                <FormHelperText error id="standard-weight-helper-text--register">
+                                    {' '}
+                                    {errors.fname}{' '}
+                                </FormHelperText>
+                            )}
                             </Grid>
                             <Grid item xs={12} sm={6}>
                                 <TextField
                                     fullWidth
+                                    error={Boolean(touched.lname && errors.lname)}
                                     label="Last Name"
                                     margin="normal"
                                     name="lname"
                                     type="text"
-                                    // defaultValue="Doe"
+                                    value={values.lname}
+                                    onBlur={handleBlur}
+                                    onChange={handleChange}
+                                    inputProps={{
+                                        classes: {
+                                            notchedOutline: classes.notchedOutline
+                                        }
+                                    }}
                                     variant="outlined"
-                                    className={classes.loginput}
+                                    // className={classes.loginput}
                                 />
+
+                        {touched.lname && errors.lname && (
+                                <FormHelperText error id="standard-weight-helper-text--register">
+                                    {' '}
+                                    {errors.lname}{' '}
+                                </FormHelperText>
+                            )}
+                                
                             </Grid>
                         </Grid>
                         <FormControl
@@ -245,6 +279,7 @@ const FirebaseRgister = ({className, ...rest}) => {
                                 id="outlined-adornment-email-register"
                                 type="email"
                                 // value={values.email}
+                                value={values.email}
                                 name="email"
                                 onBlur={handleBlur}
                                 onChange={handleChange}
