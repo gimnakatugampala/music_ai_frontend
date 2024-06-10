@@ -29,6 +29,10 @@ import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import Google from './../../../../assets/images/icons/social-google.svg';
 
 import {strengthColor, strengthIndicator} from '../../../../utils/password-strength';
+import { GoogleLogin } from '@react-oauth/google';
+import { jwtDecode } from "jwt-decode";
+
+
 
 const useStyles = makeStyles((theme) => ({
     root: {},
@@ -143,17 +147,19 @@ const FirebaseRgister = ({className, ...rest}) => {
     return (
         <React.Fragment>
             <Grid container direction="column" justifyContent="center" spacing={2}>
-                <Grid item xs={12}>
-                    <Button
-                        disableElevation
-                        fullWidth={true}
-                        className={classes.redButton}
-                        onClick={googleHandler}
-                        size="large"
-                        variant="contained"
-                    >
-                        <img src={Google} alt="google" width="20px" className={classes.loginIcon} /> Sign up with Google
-                    </Button>
+                <Grid mx={"auto"} item xs={12}>
+                    <GoogleLogin
+                    size='large'
+                    width={'50px'}
+                    onSuccess={credentialResponse => {
+                        const decoded = jwtDecode(credentialResponse?.credential);
+                        console.log(decoded);
+
+                    }}
+                    onError={() => {
+                        console.log('Login Failed');
+                    }}
+                    />
                 </Grid>
                 <Grid item xs={12}>
                     <Box alignItems="center" display="flex">

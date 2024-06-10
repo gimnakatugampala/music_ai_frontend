@@ -8,6 +8,8 @@ import {Provider} from 'react-redux';
 import App from './App';
 import reducer from './store/reducer';
 import config from './config';
+import { GoogleOAuthProvider } from '@react-oauth/google';
+
 import './assets/scss/style.scss';
 import * as serviceWorker from './serviceWorker';
 
@@ -15,8 +17,11 @@ const store = createStore(reducer);
 
 ReactDOM.render(
     <Provider store={store}>
+
         <BrowserRouter basename={config.basename}>
+        <GoogleOAuthProvider clientId="166719880647-dtqtf61pf4sb46gds3hrdcjqd3016lcm.apps.googleusercontent.com">
             <App />
+        </GoogleOAuthProvider>
         </BrowserRouter>
     </Provider>,
     document.getElementById('root')
