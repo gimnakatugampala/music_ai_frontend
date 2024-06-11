@@ -12,17 +12,21 @@ import { GoogleOAuthProvider } from '@react-oauth/google';
 
 import './assets/scss/style.scss';
 import * as serviceWorker from './serviceWorker';
+import toast, { Toaster } from 'react-hot-toast';
+
 
 const store = createStore(reducer);
 
 ReactDOM.render(
     <Provider store={store}>
-
+     <Toaster position="bottom-center"
+  reverseOrder={false} />
         <BrowserRouter basename={config.basename}>
         <GoogleOAuthProvider clientId="166719880647-dtqtf61pf4sb46gds3hrdcjqd3016lcm.apps.googleusercontent.com">
             <App />
         </GoogleOAuthProvider>
         </BrowserRouter>
+        
     </Provider>,
     document.getElementById('root')
 );

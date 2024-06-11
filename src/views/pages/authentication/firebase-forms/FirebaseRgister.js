@@ -31,6 +31,9 @@ import Google from './../../../../assets/images/icons/social-google.svg';
 import {strengthColor, strengthIndicator} from '../../../../utils/password-strength';
 import { GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from "jwt-decode";
+import SuccessToast from '../../../../ui-component/toast/SuccessToast';
+import ErrorToast from '../../../../ui-component/toast/ErrorToast';
+
 
 
 
@@ -146,6 +149,7 @@ const FirebaseRgister = ({className, ...rest}) => {
 
     return (
         <React.Fragment>
+           
             <Grid container direction="column" justifyContent="center" spacing={2}>
                 <Grid mx={"auto"} item xs={12}>
                     <GoogleLogin
@@ -201,6 +205,8 @@ const FirebaseRgister = ({className, ...rest}) => {
                 })}
                 onSubmit={async (values, {setErrors, setStatus, setSubmitting}) => {
                     try {
+                        // SuccessToast()
+                        // ErrorToast()
                         console.log('Form Values:', values);
                         if (scriptedRef.current) {
                             setStatus({success: true});

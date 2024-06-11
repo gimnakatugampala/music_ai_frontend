@@ -28,7 +28,7 @@ import {IconLogout, IconSearch, IconSettings} from '@tabler/icons';
 
 import UpgradePlanCard from '../../../../ui-component/cards/UpgradePlanCard';
 
-import User1 from './../../../../assets/images/users/user-round.svg';
+import User1 from './../../../../assets/images/music_ai_profile_img.png';
 import LockOpenIcon from '@material-ui/icons/LockOpen';
 import VpnKeyIcon from '@material-ui/icons/VpnKey';
 import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
