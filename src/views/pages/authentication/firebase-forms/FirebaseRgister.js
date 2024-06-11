@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useSelector} from 'react-redux';
 import clsx from 'clsx';
 import * as Yup from 'yup';
@@ -33,6 +33,9 @@ import { GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from "jwt-decode";
 import SuccessToast from '../../../../ui-component/toast/SuccessToast';
 import ErrorToast from '../../../../ui-component/toast/ErrorToast';
+import { SignUpUser } from '../../../../api';
+import BtnSpinner from '../../../../ui-component/spinner/BtnSpinner';
+
 
 
 
@@ -125,9 +128,9 @@ const FirebaseRgister = ({className, ...rest}) => {
     const [strength, setStrength] = React.useState(0);
     const [level, setLevel] = React.useState('');
 
-    const googleHandler = async () => {
+    const [btnLoading, setbtnLoading] = useState(false)
 
-    };
+  
 
     const handleClickShowPassword = () => {
         setShowPassword(!showPassword);
@@ -141,6 +144,8 @@ const FirebaseRgister = ({className, ...rest}) => {
         const temp = strengthIndicator(value);
         setStrength(temp);
         setLevel(strengthColor(temp));
+        // console.log(temp)
+        // console.log(value)
     };
 
     useEffect(() => {
@@ -202,23 +207,43 @@ const FirebaseRgister = ({className, ...rest}) => {
                     lname: Yup.string().max(255).required('Last Name is required'),
                     email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
                     password: Yup.string().max(255).required('Password is required')
-                })}
-                onSubmit={async (values, {setErrors, setStatus, setSubmitting}) => {
-                    try {
-                        // SuccessToast()
-                        // ErrorToast()
+                    })}
+                    onSubmit={async (values, {setErrors, setStatus, setSubmitting}) => {
+                        try {
+                        
+                        setbtnLoading(true)
+
                         console.log('Form Values:', values);
-                        if (scriptedRef.current) {
-                            setStatus({success: true});
-                            setSubmitting(false);
+                        
+                        if(strengthIndicator(values.password) < 4){
+                            ErrorToast("Password is not strong enough")
+                            return
                         }
+
+                        if(checked == false){
+                            ErrorToast("Please accept our terms & conditions")
+                            return
+                        }
+                            
+
+                        let rawData = {
+                            profile_img:"",
+                            first_name:values.fname,
+                            last_name:values.lname,
+                            email:values.email,
+                            password:values.password
+                        }
+
+                        SignUpUser(rawData,setbtnLoading)
+
+
+
+                    
+
                     } catch (err) {
                         console.error(err);
-                        if (scriptedRef.current) {
-                            setStatus({success: false});
-                            setErrors({submit: err.message});
-                            setSubmitting(false);
-                        }
+                    
+                        ErrorToast("Something went wrong")
                     }
                 }}
             >
@@ -400,11 +425,23 @@ const FirebaseRgister = ({className, ...rest}) => {
                                 <FormHelperText error>{errors.submit}</FormHelperText>
                             </Box>
                         )}
-
+ 
                         <Box mt={2}>
-                            <Button
+                            {btnLoading ? (
+                                <Button
                                 disableElevation
                                 disabled={isSubmitting}
+                                fullWidth
+                                size="large"
+                                type="submit"
+                                variant="contained"
+                                className={classes.login}
+                                >
+                                <BtnSpinner />
+                                </Button>
+                            ) : (
+                            <Button
+                                disableElevation
                                 fullWidth
                                 size="large"
                                 type="submit"
@@ -413,6 +450,8 @@ const FirebaseRgister = ({className, ...rest}) => {
                             >
                                 Sign up
                             </Button>
+                            )}
+                         
                         </Box>
                     </form>
                 )}

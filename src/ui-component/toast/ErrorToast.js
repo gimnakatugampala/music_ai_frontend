@@ -1,8 +1,8 @@
 import React from 'react'
 import toast, { Toaster } from 'react-hot-toast';
 
-const ErrorToast = () => {
-    toast.error('Hello Darkness!',
+const ErrorToast = (title) => {
+    toast.error(title,
         {
           icon: '❌',
           style: {

@@ -16,6 +16,7 @@
         "date-fns": "^2.21.1",
         "formik": "^2.2.6",
         "framer-motion": "^3.10.6",
+        "js-cookie": "^3.0.5",
         "jss-rtl": "^0.3.0",
         "jwt-decode": "^4.0.0",
         "material-ui-audio-player": "^1.7.1",

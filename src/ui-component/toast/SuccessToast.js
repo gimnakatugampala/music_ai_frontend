@@ -2,8 +2,8 @@ import React from 'react'
 import toast, { Toaster } from 'react-hot-toast';
 
 
-const SuccessToast = () => {
-    toast.success('Hello Darkness!',
+const SuccessToast = (title) => {
+    toast.success(title,
         {
           icon: '✔',
           style: {
