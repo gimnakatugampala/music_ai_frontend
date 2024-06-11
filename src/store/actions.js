@@ -26,3 +26,14 @@ export const showMusicPlayer = () => ({
   export const hideMusicPlayer = () => ({
     type: HIDE_MUSIC_PLAYER,
   });
+
+
+  // User
+  export const setUser = (user) => ({
+    type: 'SET_USER',
+    payload: user,
+});
+
+export const clearUser = () => ({
+    type: 'CLEAR_USER',
+});
