@@ -430,7 +430,6 @@ const FirebaseRgister = ({className, ...rest}) => {
                             {btnLoading ? (
                                 <Button
                                 disableElevation
-                                disabled={isSubmitting}
                                 fullWidth
                                 size="large"
                                 type="submit"

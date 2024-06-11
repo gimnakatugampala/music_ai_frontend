@@ -34,7 +34,7 @@ export const SignUpUser = async(rawData,setbtnLoading) =>{
 
         setbtnLoading(false)
 
-        Cookies.set('music_ai_user', JSON.stringify(result.responseData))
+        Cookies.set('music_ai_user', JSON.stringify(rawData))
 
         setTimeout(() => {
           window.location.href = "/"
@@ -51,3 +51,93 @@ export const SignUpUser = async(rawData,setbtnLoading) =>{
   
   }
   
+
+export const SignInUser = async(rawData,setbtnLoading) =>{
+
+    const myHeaders = new Headers();
+myHeaders.append("Content-Type", "application/json");
+
+const raw = JSON.stringify(rawData);
+
+const requestOptions = {
+  method: "POST",
+  headers: myHeaders,
+  body: raw,
+  redirect: "follow"
+};
+
+fetch(`${BACKEND_LINK}/signin/`, requestOptions)
+  .then((response) => response.json())
+  .then((result) => {
+    console.log(result)
+
+    if(result.responseCode == "401"){
+      ErrorToast(result.responseMsg)
+      setbtnLoading(false)
+      return
+    }
+
+    if(result.responseCode == "200"){
+      SuccessToast(result.responseMsg)
+      setbtnLoading(false)
+
+      Cookies.set('music_ai_user', JSON.stringify(result.responseData))
+
+      setTimeout(() => {
+        window.location.href = "/"
+      }, 2000);
+
+      return
+    }
+
+  })
+  .catch((error) => console.error(error));
+
+  }
+
+
+  export const GoogleAuthUser = async(rawData,setbtnLoading) =>{
+
+    const myHeaders = new Headers();
+myHeaders.append("Content-Type", "application/json");
+
+const raw = JSON.stringify(rawData);
+
+const requestOptions = {
+  method: "POST",
+  headers: myHeaders,
+  body: raw,
+  redirect: "follow"
+};
+
+fetch(`${BACKEND_LINK}/google-auth/`, requestOptions)
+  .then((response) => response.json())
+  .then((result) => {
+    console.log(result)
+
+
+    if(result.responseCode == "401"){
+        ErrorToast("Something went wrong")
+        setbtnLoading(false)
+        return
+    }
+
+    if(result.responseCode == "200"){
+      SuccessToast("Success")
+
+      setbtnLoading(false)
+
+      Cookies.set('music_ai_user', JSON.stringify(rawData))
+
+      setTimeout(() => {
+        window.location.href = "/"
+      }, 2000);
+
+      return  
+    }
+
+
+  })
+  .catch((error) => console.error(error));
+
+  }

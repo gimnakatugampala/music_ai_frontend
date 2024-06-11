@@ -1,4 +1,4 @@
-import React from 'react';
+import React ,{ useState } from 'react';
 import clsx from 'clsx';
 import * as Yup from 'yup';
 import {Formik} from 'formik';
@@ -28,6 +28,10 @@ import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import Google from './../../../../assets/images/icons/social-google.svg';
 import { GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from "jwt-decode";
+import ErrorToast from '../../../../ui-component/toast/ErrorToast';
+import { SignInUser, GoogleAuthUser } from '../../../../api';
+import BtnSpinner from '../../../../ui-component/spinner/BtnSpinner';
+
 
 const useStyles = makeStyles((theme) => ({
     root: {},
@@ -115,9 +119,9 @@ const FirebaseLogin = (props, {className, ...rest}) => {
     const [showPassword, setShowPassword] = React.useState(false);
     const [checked, setChecked] = React.useState(true);
 
-    const googleHandler = async () => {
+    const [btnLoading, setbtnLoading] = useState(false)
 
-    };
+    
 
     const handleClickShowPassword = () => {
         setShowPassword(!showPassword);
@@ -137,11 +141,26 @@ const FirebaseLogin = (props, {className, ...rest}) => {
                     onSuccess={credentialResponse => {
                         const decoded = jwtDecode(credentialResponse?.credential);
                         console.log(decoded);
-                        console.log(credentialResponse);
+
+                        setbtnLoading(true)
+
+                        let rawData = {
+                            profile_img: decoded.picture,
+                            first_name: decoded.given_name,
+                            last_name: decoded.family_name,
+                            email: decoded.email,
+                            password: decoded.email
+                        }
+
+                        GoogleAuthUser(rawData,setbtnLoading)
+
+                        // console.log(credentialResponse);
 
                     }}
                     onError={() => {
                         console.log('Login Failed');
+                        setbtnLoading(false)
+                        ErrorToast('Login Failed')
                     }}
                     />
                 </Grid>
@@ -171,8 +190,8 @@ const FirebaseLogin = (props, {className, ...rest}) => {
 
             <Formik
                 initialValues={{
-                    email: 'info@codedthemes.com',
-                    password: '123456',
+                    email: '',
+                    password: '',
                     submit: null
                 }}
                 validationSchema={Yup.object().shape({
@@ -182,17 +201,28 @@ const FirebaseLogin = (props, {className, ...rest}) => {
                 onSubmit={async (values, {setErrors, setStatus, setSubmitting}) => {
                     try {
 
-                        if (scriptedRef.current) {
-                            setStatus({success: true});
-                            setSubmitting(false);
+                        setbtnLoading(true)
+
+                        let rawData = {
+                            email: values.email,
+                            password: values.password
                         }
+
+                        // console.log(rawData)
+
+                        SignInUser(rawData,setbtnLoading)
+
+                        
+
                     } catch (err) {
                         console.error(err);
-                        if (scriptedRef.current) {
-                            setStatus({success: false});
-                            setErrors({submit: err.message});
-                            setSubmitting(false);
-                        }
+                        // if (scriptedRef.current) {
+                        //     setStatus({success: false});
+                        //     setErrors({submit: err.message});
+                        //     setSubmitting(false);
+                        // }
+
+                        ErrorToast("Something went wrong")
                     }
                 }}
             >
@@ -295,9 +325,23 @@ const FirebaseLogin = (props, {className, ...rest}) => {
                         )}
 
                         <Box mt={2}>
+                            {btnLoading ? (
+
+                                <Button
+                                disableElevation
+                                fullWidth
+                                size="large"
+                                type="submit"
+                                variant="contained"
+                                className={classes.login}
+                                >
+                                    <BtnSpinner />
+                                </Button>
+
+                            ) : (
+
                             <Button
                                 disableElevation
-                                disabled={isSubmitting}
                                 fullWidth
                                 size="large"
                                 type="submit"
@@ -306,6 +350,9 @@ const FirebaseLogin = (props, {className, ...rest}) => {
                             >
                                 Sign in
                             </Button>
+
+                            )}
+                           
                         </Box>
                     </form>
                 )}
