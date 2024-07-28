@@ -12,7 +12,7 @@ import ChartCard from '../../ui-component/cards/ChartCard';
 import PopularCard from '../../ui-component/cards/PopularCard';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
-import { GenerateAudio } from '../../api';
+import { GenerateAudio, GenerateImage } from '../../api';
 
 
 
@@ -29,6 +29,11 @@ const Dashboard = () => {
         {img:'https://api.riffusion.com/storage/v1/object/public/images/private/45e77d25-03c6-4a5f-b7a3-f318de656d11.jpg'},
         {img:'https://api.riffusion.com/storage/v1/object/public/images/private/12142022-22d2-4e85-bc4e-da38e090b1c1.jpg'}
     ])
+
+    useEffect(() => {
+        GenerateImage()
+    }, [])
+    
 
     return (
         <>

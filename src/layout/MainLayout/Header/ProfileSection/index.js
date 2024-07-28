@@ -32,6 +32,9 @@ import User1 from './../../../../assets/images/music_ai_profile_img.png';
 import LockOpenIcon from '@material-ui/icons/LockOpen';
 import VpnKeyIcon from '@material-ui/icons/VpnKey';
 import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
+import { useDispatch } from 'react-redux';
+import ErrorToast from '../../../../ui-component/toast/ErrorToast';
+import Cookies from 'js-cookie';
 
 const useStyles = makeStyles((theme) => ({
     navContainer: {
@@ -118,12 +121,24 @@ const ProfileSection = () => {
     const [notification, setNotification] = React.useState(false);
     const [selectedIndex] = React.useState(1);
 
+    const user = useSelector((state) => state.user.user);
+
     const [open, setOpen] = React.useState(false);
     const anchorRef = React.useRef(null);
     const handleLogout = async () => {
         try {
             //handleClose();
             //await logout();
+
+            Cookies.remove('music_ai_user')
+
+            ErrorToast("User logged logout")
+
+            setTimeout(() => {
+                window.location.reload()
+            }, 1500);
+
+
         } catch (err) {
             console.error(err);
         }
@@ -146,14 +161,18 @@ const ProfileSection = () => {
 
         prevOpen.current = open;
     }, [open]);
+
+    const profileImgSrc = user == null ? User1 :  user.profile_img;
+
     return (
+        user != null && 
         <React.Fragment>
             <Chip
                 classes={{label: classes.profileLabel}}
                 className={classes.profileChip}
                 icon={
                     <Avatar
-                        src={User1}
+                        src={profileImgSrc}
                         className={classes.headerAvtar}
                         ref={anchorRef}
                         aria-controls={open ? 'menu-list-grow' : undefined}
@@ -195,13 +214,12 @@ const ProfileSection = () => {
                                     <CardContent className={classes.cardContent}>
                                         <Grid container direction="column" spacing={0}>
                                             <Grid item className={classes.flex}>
-                                                <Typography variant="h4">Good Morning,</Typography>
                                                 <Typography component="span" variant="h4" className={classes.name}>
-                                                    Gimna
+                                                    {user.first_name == null ? "" : user.first_name} {user.last_name == null ? "" : user.last_name}
                                                 </Typography>
                                             </Grid>
                                             <Grid item>
-                                                <Typography variant="subtitle2">Project Admin</Typography>
+                                                <Typography variant="subtitle2">{user.email == null ? "" : user.email}</Typography>
                                             </Grid>
                                         </Grid>
                                        
@@ -210,37 +228,37 @@ const ProfileSection = () => {
                                         
 
                                             <List component="nav" className={classes.navContainer}>
-                                                <ListItem
+                                                {/* <ListItem
                                                     className={classes.listItem}
                                                     sx={{borderRadius: customization.borderRadius + 'px'}}
                                                     button
-                                                    selected={selectedIndex == 1}
+                                                    // selected={selectedIndex == 1}
                                                     onClick={(e) => window.location.href = "/login"}
                                                 >
                                                     <ListItemIcon>
                                                         <LockOpenIcon stroke={1.5} size="1.3rem" />
                                                     </ListItemIcon>
                                                     <ListItemText primary={<Typography variant="body2">Login</Typography>} />
-                                                </ListItem>
+                                                </ListItem> */}
 
-                                                <ListItem
+                                                {/* <ListItem
                                                     className={classes.listItem}
                                                     sx={{borderRadius: customization.borderRadius + 'px'}}
                                                     button
-                                                    selected={selectedIndex == 2}
+                                                    // selected={selectedIndex == 2}
                                                     onClick={(e) => window.location.href = "/register"}
                                                 >
                                                     <ListItemIcon>
                                                         <PersonOutlineIcon stroke={1.5} size="1.3rem" />
                                                     </ListItemIcon>
                                                     <ListItemText primary={<Typography variant="body2">Register</Typography>} />
-                                                </ListItem>
+                                                </ListItem> */}
 
                                                 <ListItem
                                                     className={classes.listItem}
                                                     sx={{borderRadius: customization.borderRadius + 'px'}}
                                                     button
-                                                    selected={selectedIndex == 3}
+                                                    // selected={selectedIndex == 3}
                                                     onClick={handleLogout}
                                                 >
                                                     <ListItemIcon>

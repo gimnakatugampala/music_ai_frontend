@@ -81,7 +81,7 @@ fetch(`${BACKEND_LINK}/signin/`, requestOptions)
       SuccessToast(result.responseMsg)
       setbtnLoading(false)
 
-      Cookies.set('music_ai_user', JSON.stringify(result.responseData))
+      Cookies.set('music_ai_user', JSON.stringify(rawData))
 
       setTimeout(() => {
         window.location.href = "/"
@@ -140,4 +140,37 @@ fetch(`${BACKEND_LINK}/google-auth/`, requestOptions)
   })
   .catch((error) => console.error(error));
 
+  }
+
+  export const GenerateImage = async() =>{
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    
+    const raw = JSON.stringify({
+      "json": {
+        "group_id": "190be657-38f0-4377-9cec-25ef6c71c576",
+        "prompts": [
+          "a winding road through a tranquil countryside, sunset, nostalgic, peaceful",
+          "a sunlit meadow with a winding path, female figure walking, vibrant, serene",
+          "a grand opera house nestled in a scenic landscape, soprano singer on stage, dramatic, breathtaking"
+        ],
+        "ids": [
+          "9c039f0b-b829-4b2c-81fa-c67fd0eedc47",
+          "41325e0a-77da-4565-9c3f-b72660295937",
+          "4fc9b641-bd4a-4c1d-bfaa-098690f0d1c6"
+        ]
+      }
+    });
+    
+    const requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow"
+    };
+    
+    fetch("http://127.0.0.1:8000/create-image/", requestOptions)
+      .then((response) => response.json())
+      .then((result) => console.log(result))
+      .catch((error) => console.error(error));
   }

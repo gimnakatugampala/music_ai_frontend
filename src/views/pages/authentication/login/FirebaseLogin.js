@@ -146,8 +146,8 @@ const FirebaseLogin = (props, {className, ...rest}) => {
 
                         let rawData = {
                             profile_img: decoded.picture,
-                            first_name: decoded.given_name,
-                            last_name: decoded.family_name,
+                            first_name: decoded.given_name ==null ? "" : decoded.given_name,
+                            last_name: decoded.family_name ==null ? "" : decoded.family_name,
                             email: decoded.email,
                             password: decoded.email
                         }

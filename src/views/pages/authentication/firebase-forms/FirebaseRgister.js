@@ -33,7 +33,7 @@ import { GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from "jwt-decode";
 import SuccessToast from '../../../../ui-component/toast/SuccessToast';
 import ErrorToast from '../../../../ui-component/toast/ErrorToast';
-import { SignUpUser } from '../../../../api';
+import { GoogleAuthUser, SignUpUser } from '../../../../api';
 import BtnSpinner from '../../../../ui-component/spinner/BtnSpinner';
 
 
@@ -157,16 +157,32 @@ const FirebaseRgister = ({className, ...rest}) => {
            
             <Grid container direction="column" justifyContent="center" spacing={2}>
                 <Grid mx={"auto"} item xs={12}>
-                    <GoogleLogin
+                <GoogleLogin
                     size='large'
                     width={'50px'}
                     onSuccess={credentialResponse => {
                         const decoded = jwtDecode(credentialResponse?.credential);
                         console.log(decoded);
 
+                        setbtnLoading(true)
+
+                        let rawData = {
+                            profile_img: decoded.picture,
+                            first_name: decoded.given_name ==null ? "" : decoded.given_name,
+                            last_name: decoded.family_name ==null ? "" : decoded.family_name,
+                            email: decoded.email,
+                            password: decoded.email
+                        }
+
+                        GoogleAuthUser(rawData,setbtnLoading)
+
+                        // console.log(credentialResponse);
+
                     }}
                     onError={() => {
                         console.log('Login Failed');
+                        setbtnLoading(false)
+                        ErrorToast('Login Failed')
                     }}
                     />
                 </Grid>

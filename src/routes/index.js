@@ -28,6 +28,8 @@ const Routes = () => {
             dispatch(setUser(userData));
         }
 
+        // console.log(user)
+
     }, []);
 
     return (
