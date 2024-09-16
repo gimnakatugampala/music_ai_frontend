@@ -8,6 +8,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import MusicNoteIcon from '@material-ui/icons/MusicNote';
 import Switch from '@material-ui/core/Switch';
 import { useState } from 'react';
+import ErrorAlert from '../../../functions/ErrorAlert';
 
 
 
@@ -23,6 +24,18 @@ const GenerateMusicInput = () => {
       const handleChange = (event) => {
         setswitchSingType(event.target.checked)
       };
+
+
+      const handleSubmitSongDescription = () =>{
+        console.log(songDesc)
+        console.log(switchSingType)
+
+        if(songDesc == ""){
+          ErrorAlert("Please enter song description")
+          return
+        }
+
+      }
 
 
   return (
@@ -94,6 +107,7 @@ const GenerateMusicInput = () => {
 
         <Box my={2}>
             <Button
+            onClick={handleSubmitSongDescription}
                 disableElevation
                 fullWidth
                 size="large"

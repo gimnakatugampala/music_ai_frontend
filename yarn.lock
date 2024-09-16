@@ -10742,6 +10742,11 @@
   dependencies:
     "goober" "^2.1.10"
 
+"react-icons@^5.3.0":
+  "integrity" "sha512-DnUk8aFbTyQPSkCfF8dbX6kQjXA9DktMeJqfjrg6cK9vwQVMxmcA3BfP4QoiztVmEHtwlTgLFsPuH2NskKT6eg=="
+  "resolved" "https://registry.npmjs.org/react-icons/-/react-icons-5.3.0.tgz"
+  "version" "5.3.0"
+
 "react-intl@^5.14.0":
   "integrity" "sha512-CCGZnb69TUXlDm/GL6R6VAD4RFTqPcIlotRs8RA5SjZX5gxJVgVokvlM9T3sA5BWInGNZUXXNOiZE7yROVUDIg=="
   "resolved" "https://registry.npmjs.org/react-intl/-/react-intl-5.17.5.tgz"
