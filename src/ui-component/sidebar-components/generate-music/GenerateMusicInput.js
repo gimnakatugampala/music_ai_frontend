@@ -28,43 +28,40 @@ const GenerateMusicInput = () => {
   // Generate Song by description
   const handleSubmitSongDescription = async () => {
     if (songDesc === "") {
-      ErrorAlert("Please enter a song description");
+      ErrorAlert("Please enter song description");
       return;
     }
   
     try {
-      console.log("Calling GenerateTextVariations and GenerateMusicImage APIs simultaneously...");
+      console.log("Calling GenerateMusicBySongDesc, GenerateTextVariations, and GenerateMusicImage APIs...");
   
-      // 1. Prepare the visual data for GenerateMusicImage
-      const visuals = [songDesc, songDesc]; // Hardcoded visuals for the example, or you can adjust this based on user input
+      // Create promises for all the API calls
+      const musicDescPromise = GenerateMusicBySongDesc(songDesc); // Generate music by description
+      const textVariationPromise = GenerateTextVariations(songDesc, settextVariations); // Generate text variations
+      const musicImagePromise = GenerateMusicImage({ "visuals": [songDesc, songDesc] }); // Generate music image
   
-      // 2. Trigger both API calls without waiting for one to finish
-      const generateTextVariationsPromise = GenerateTextVariations(songDesc, (result) => {
-        console.log("Text variations generated:", result);
-        settextVariations(result); // You can set the variations here
-  
-        // If you still need something from GenerateTextVariations for GenerateMusicImage,
-        // you can conditionally trigger another call here.
-      });
-  
-      const generateMusicImagePromise = GenerateMusicImage({visuals});
-  
-      // 3. Use Promise.all() to ensure both APIs finish but do not wait for each other.
-      const [textVariationsResult, musicImageResult] = await Promise.all([
-        generateTextVariationsPromise,
-        generateMusicImagePromise
+      // Use Promise.all to run all the promises concurrently
+      const [audioUrls, textVariationResult, musicImageResult] = await Promise.all([
+        musicDescPromise,
+        textVariationPromise,
+        musicImagePromise
       ]);
   
-      // 4. Process both results as needed
-      console.log("Text Variations Result:", textVariationsResult);
-      console.log("Music Image Result:", musicImageResult);
+      // After all APIs have resolved, handle the results
+      console.log("Generated audio URLs:", audioUrls);
+      setAudioUrls(audioUrls); // Assuming you want to store audio URLs in state
+  
+      console.log("Generated text variations:", textVariationResult);
+      // You can process the text variations as needed here
+  
+      console.log("Generated music images:", musicImageResult);
+      // Handle the music images if needed
   
     } catch (error) {
       console.error("Error in handleSubmitSongDescription:", error);
       ErrorAlert("Error generating music.");
     }
   };
-  
 
   // Handle the onCanPlay event to start playback
 
