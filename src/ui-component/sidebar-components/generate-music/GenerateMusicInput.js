@@ -8,7 +8,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import MusicNoteIcon from '@material-ui/icons/MusicNote';
 import Switch from '@material-ui/core/Switch';
 import ErrorAlert from '../../../functions/ErrorAlert';
-import { GenerateMusicBySongDesc, AudioStreamingAPI, AudioSreamingAPI } from '../../../api';
+import { GenerateMusicBySongDesc, AudioStreamingAPI, AudioSreamingAPI, GenerateTextVariations, GenerateMusicImage } from '../../../api';
 
 const GenerateMusicInput = () => {
   const classes = useThemeStyles();
@@ -16,6 +16,8 @@ const GenerateMusicInput = () => {
   const [songDesc, setSongDesc] = useState("");
   const [switchSingType, setSwitchSingType] = useState(true);
   const [audioUrls, setAudioUrls] = useState([]); // state for storing audio URLs
+
+  const [textVariations, settextVariations] = useState(null)
 
 
 
@@ -29,23 +31,45 @@ const GenerateMusicInput = () => {
       ErrorAlert("Please enter song description");
       return;
     }
-
-    setLoading(true); // set loading to true before fetching
-
+  
     try {
-      const clipUrls = await GenerateMusicBySongDesc(songDesc); // get the clip URLs
-      
-      // Fetch and process audio data for each URL
-      const processedAudioUrls = ""
-      // await Promise.all(clipUrls.map(url => AudioStreamingAPI(url)));
-      
-      setAudioUrls(processedAudioUrls); // update state with processed audio URLs
+      console.log("Calling GenerateTextVariations API...");
+      await GenerateTextVariations(songDesc, (result) => {
+        console.log("Text variations generated:", result); // Log the result of GenerateTextVariations
+  
+        // Correctly access the nested response data
+        const outputs = result.result?.data?.json?.outputs;
+        const groupId = result.result?.data?.json?.group_id;
+  
+        // Check if the data exists
+        if (outputs && groupId) {
+          console.log("Generating music image...");
+          const rawData = {
+            result: {
+              data: {
+                json: {
+                  outputs: outputs, // Pass the actual variations here
+                  group_id: groupId,
+                },
+              },
+            },
+          };
+  
+          // Now pass this raw data to GenerateMusicImage
+          GenerateMusicImage(rawData);
+        } else {
+          console.error("Invalid data structure in GenerateTextVariations:", result);
+        }
+      });
+  
     } catch (error) {
+      console.error("Error in handleSubmitSongDescription:", error);
       ErrorAlert("Error generating music.");
-    } finally {
-      setLoading(false); // set loading to false after the operation
     }
   };
+  
+  
+  
 
   // Handle the onCanPlay event to start playback
 

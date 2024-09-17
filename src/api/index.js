@@ -144,17 +144,17 @@ fetch(`${BACKEND_LINK}/google-auth/`, requestOptions)
   }
 
 
-  export const GenerateTextVariations = async(songDesc) =>{
+  export const GenerateTextVariations = async(songDesc,settextVariations) =>{
 
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
   const raw = JSON.stringify({
     "json": {
-      "text": `${songDesc}`,
+      "text": ``,
       "user_id": "509c8c77-ce2e-4822-b29a-d3aae768b3ba",
       "is_augment_prompt": true,
-      "lyrics": "I my name is Gimna. I am 23 years old",
+      "lyrics": `${songDesc}`,
       "is_public": true,
       "curate_variations": false
     }
@@ -169,11 +169,36 @@ const requestOptions = {
 
 fetch(`${BACKEND_LINK}/generate-text-variations/`, requestOptions)
   .then((response) => response.json())
-  .then((result) => console.log(result))
+  .then((result) => {
+    console.log(result)
+    settextVariations(result)
+  })
   .catch((error) => console.error(error));
 
 
   }
+
+  export const GenerateMusicImage = async (rawData) => {
+
+    const myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+
+  const raw = JSON.stringify(rawData);
+
+  const requestOptions = {
+    method: "POST",
+    headers: myHeaders,
+    body: raw,
+    redirect: "follow"
+  };
+
+  fetch(`${BACKEND_LINK}/create-images/`, requestOptions)
+    .then((response) => response.json())
+    .then((result) => console.log(result))
+    .catch((error) => console.error(error));
+
+  }
+
 
 // api.js
 export const GenerateMusicBySongDesc = async (songDesc) => {
