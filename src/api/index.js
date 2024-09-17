@@ -151,7 +151,7 @@ fetch(`${BACKEND_LINK}/google-auth/`, requestOptions)
 
   const raw = JSON.stringify({
     "json": {
-      "text": ``,
+      "text": `${songDesc}`,
       "user_id": "509c8c77-ce2e-4822-b29a-d3aae768b3ba",
       "is_augment_prompt": true,
       "lyrics": `${songDesc}`,
@@ -178,12 +178,12 @@ fetch(`${BACKEND_LINK}/generate-text-variations/`, requestOptions)
 
   }
 
-  export const GenerateMusicImage = async (rawData) => {
+  export const GenerateMusicImage = async (visuals) => {
 
     const myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
 
-  const raw = JSON.stringify(rawData);
+  const raw = JSON.stringify(visuals);
 
   const requestOptions = {
     method: "POST",

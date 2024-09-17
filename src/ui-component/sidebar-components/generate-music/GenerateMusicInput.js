@@ -28,47 +28,42 @@ const GenerateMusicInput = () => {
   // Generate Song by description
   const handleSubmitSongDescription = async () => {
     if (songDesc === "") {
-      ErrorAlert("Please enter song description");
+      ErrorAlert("Please enter a song description");
       return;
     }
   
     try {
-      console.log("Calling GenerateTextVariations API...");
-      await GenerateTextVariations(songDesc, (result) => {
-        console.log("Text variations generated:", result); // Log the result of GenerateTextVariations
+      console.log("Calling GenerateTextVariations and GenerateMusicImage APIs simultaneously...");
   
-        // Correctly access the nested response data
-        const outputs = result.result?.data?.json?.outputs;
-        const groupId = result.result?.data?.json?.group_id;
+      // 1. Prepare the visual data for GenerateMusicImage
+      const visuals = [songDesc, songDesc]; // Hardcoded visuals for the example, or you can adjust this based on user input
   
-        // Check if the data exists
-        if (outputs && groupId) {
-          console.log("Generating music image...");
-          const rawData = {
-            result: {
-              data: {
-                json: {
-                  outputs: outputs, // Pass the actual variations here
-                  group_id: groupId,
-                },
-              },
-            },
-          };
+      // 2. Trigger both API calls without waiting for one to finish
+      const generateTextVariationsPromise = GenerateTextVariations(songDesc, (result) => {
+        console.log("Text variations generated:", result);
+        settextVariations(result); // You can set the variations here
   
-          // Now pass this raw data to GenerateMusicImage
-          GenerateMusicImage(rawData);
-        } else {
-          console.error("Invalid data structure in GenerateTextVariations:", result);
-        }
+        // If you still need something from GenerateTextVariations for GenerateMusicImage,
+        // you can conditionally trigger another call here.
       });
+  
+      const generateMusicImagePromise = GenerateMusicImage({visuals});
+  
+      // 3. Use Promise.all() to ensure both APIs finish but do not wait for each other.
+      const [textVariationsResult, musicImageResult] = await Promise.all([
+        generateTextVariationsPromise,
+        generateMusicImagePromise
+      ]);
+  
+      // 4. Process both results as needed
+      console.log("Text Variations Result:", textVariationsResult);
+      console.log("Music Image Result:", musicImageResult);
   
     } catch (error) {
       console.error("Error in handleSubmitSongDescription:", error);
       ErrorAlert("Error generating music.");
     }
   };
-  
-  
   
 
   // Handle the onCanPlay event to start playback
