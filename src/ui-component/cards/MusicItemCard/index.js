@@ -68,7 +68,7 @@ const MusicItemCard = ({item}) => {
                 
                 <Grid item>
                     <Typography className={[classes.cardHeading,'card-item-text']}>
-                        used to demonstrate the visual form of a document or a typeface without relying on meaningful content.
+                        {item.description}
                     </Typography>
                 </Grid>
             </Grid>

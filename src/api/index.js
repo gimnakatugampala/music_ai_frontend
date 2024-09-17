@@ -3,6 +3,7 @@ import SuccessToast from "../ui-component/toast/SuccessToast";
 import Cookies from "js-cookie";
 
 const BACKEND_LINK = "http://127.0.0.1:8000"
+const MUSIC_AI_TOKEN = Cookies.get('MUSIC_AI_TOKEN')
 
 export const SignUpUser = async(rawData,setbtnLoading) =>{
 
@@ -142,35 +143,99 @@ fetch(`${BACKEND_LINK}/google-auth/`, requestOptions)
 
   }
 
-  export const GenerateImage = async() =>{
+
+  export const GenerateTextVariations = async(songDesc) =>{
+
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    
-    const raw = JSON.stringify({
-      "json": {
-        "group_id": "190be657-38f0-4377-9cec-25ef6c71c576",
-        "prompts": [
-          "a winding road through a tranquil countryside, sunset, nostalgic, peaceful",
-          "a sunlit meadow with a winding path, female figure walking, vibrant, serene",
-          "a grand opera house nestled in a scenic landscape, soprano singer on stage, dramatic, breathtaking"
-        ],
-        "ids": [
-          "9c039f0b-b829-4b2c-81fa-c67fd0eedc47",
-          "41325e0a-77da-4565-9c3f-b72660295937",
-          "4fc9b641-bd4a-4c1d-bfaa-098690f0d1c6"
-        ]
-      }
-    });
-    
-    const requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow"
-    };
-    
-    fetch("http://127.0.0.1:8000/create-image/", requestOptions)
-      .then((response) => response.json())
-      .then((result) => console.log(result))
-      .catch((error) => console.error(error));
+
+  const raw = JSON.stringify({
+    "json": {
+      "text": `${songDesc}`,
+      "user_id": "509c8c77-ce2e-4822-b29a-d3aae768b3ba",
+      "is_augment_prompt": true,
+      "lyrics": "I my name is Gimna. I am 23 years old",
+      "is_public": true,
+      "curate_variations": false
+    }
+  });
+
+const requestOptions = {
+  method: "POST",
+  headers: myHeaders,
+  body: raw,
+  redirect: "follow"
+};
+
+fetch(`${BACKEND_LINK}/generate-text-variations/`, requestOptions)
+  .then((response) => response.json())
+  .then((result) => console.log(result))
+  .catch((error) => console.error(error));
+
+
   }
+
+// api.js
+export const GenerateMusicBySongDesc = async (songDesc) => {
+  const myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+
+  const raw = JSON.stringify({
+    "gpt_description_prompt": `${songDesc}`,
+    "make_instrumental": false,
+    "mv": "chirp-v3-0",
+    "prompt": ""
+  });
+
+  const requestOptions = {
+    method: "POST",
+    headers: myHeaders,
+    body: raw,
+    redirect: "follow"
+  };
+
+  try {
+    const response = await fetch(`${BACKEND_LINK}/generate/description-mode`, requestOptions);
+    const result = await response.json();
+
+    // Save the Token
+    Cookies.set('MUSIC_AI_TOKEN', result.token)
+
+
+    // Extract the clip IDs and create audio URLs
+    const audioUrls = result.response.clips.map(clip => `https://cdn1.suno.ai/${clip.id}.mp3`);
+
+    return audioUrls; // return an array of audio URLs
+  } catch (error) {
+    console.error("Error:", error);
+    throw error; // throw error to handle it in the component
+  }
+};
+
+
+export const AudioSreamingAPI = async () => {
+
+  const myHeaders = new Headers();
+  myHeaders.append("Authorization", `Bearer ${MUSIC_AI_TOKEN}`);
+  myHeaders.append("Referer", "https://suno.com");
+  myHeaders.append("Origin", "https://suno.com");
+
+  
+  const requestOptions = {
+    method: "GET",
+    headers: myHeaders,
+    redirect: "follow"
+  };
+
+  try {
+    const response = await fetch("https://cdn1.suno.ai/a5ef2e79-498c-43ef-90d2-bbad88b2c25f.mp3", requestOptions);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    // Return a blob
+    return await response.blob();
+  } catch (error) {
+    console.error("Error fetching audio:", error);
+    throw error;
+  }
+};
