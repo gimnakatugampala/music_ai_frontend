@@ -4,6 +4,7 @@ import Cookies from "js-cookie";
 
 const BACKEND_LINK = "http://127.0.0.1:8000"
 const MUSIC_AI_TOKEN = Cookies.get('MUSIC_AI_TOKEN')
+const CURRENT_USER = Cookies.get('music_ai_user')
 
 export const SignUpUser = async(rawData,setbtnLoading) =>{
 
@@ -262,5 +263,25 @@ export const AudioSreamingAPI = async () => {
   } catch (error) {
     console.error("Error fetching audio:", error);
     throw error;
+  }
+};
+
+
+
+// api/index.js
+export const GetSongsByUserEmail = async () => {
+  const requestOptions = {
+    method: "GET",
+    redirect: "follow"
+  };
+
+  try {
+    const response = await fetch(`${BACKEND_LINK}/get-song-by-email/gimna.exon@gmail.com`, requestOptions);
+    const result = await response.json();
+
+    return result; // Return the result for further use
+  } catch (error) {
+    console.error(error);
+    throw error; // Throw the error to be handled in the action
   }
 };
