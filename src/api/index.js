@@ -4,7 +4,23 @@ import Cookies from "js-cookie";
 
 const BACKEND_LINK = "http://127.0.0.1:8000"
 const MUSIC_AI_TOKEN = Cookies.get('MUSIC_AI_TOKEN')
-const CURRENT_USER = Cookies.get('music_ai_user')
+
+
+let CURRENT_USER = null;
+
+try {
+  const userCookie = Cookies.get('music_ai_user');
+  
+  if (userCookie) {
+    CURRENT_USER = JSON.parse(userCookie);
+  } else {
+    console.error('User cookie not found');
+  }
+} catch (error) {
+  console.error('Error parsing user cookie:', error);
+}
+
+
 
 export const SignUpUser = async(rawData,setbtnLoading) =>{
 
@@ -276,7 +292,7 @@ export const GetSongsByUserEmail = async () => {
   };
 
   try {
-    const response = await fetch(`${BACKEND_LINK}/get-song-by-email/gimna.exon@gmail.com`, requestOptions);
+    const response = await fetch(`${BACKEND_LINK}/get-song-by-email/${CURRENT_USER.email}`, requestOptions);
     const result = await response.json();
 
     return result; // Return the result for further use
