@@ -49,13 +49,13 @@ const Dashboard = () => {
                             </Typography>
                         </Box>
 
-                        {/* <Grid container spacing={gridSpacing}>
-                            {m.songs.map((song, index) => (
-                                <Grid key={index} item lg={6} md={6} sm={6} xs={12}>
-                                    <MusicItemCard item={song} />
+                        <Grid container spacing={gridSpacing}>
+                            {m.song_items.map((songItem) => (
+                                <Grid key={songItem.id} item lg={6} md={6} sm={6} xs={12}>
+                                    <MusicItemCard item={songItem} /> {/* Passing each song item */}
                                 </Grid>
                             ))}
-                        </Grid> */}
+                        </Grid>
                     </Grid>
                 ))}
             </Grid>

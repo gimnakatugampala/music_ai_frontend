@@ -1,25 +1,15 @@
 import React from 'react';
-import {Avatar, Box, Card, CardContent, Grid, makeStyles, Menu, MenuItem, Typography} from '@material-ui/core';
-
-import EarningIcon from './../../../assets/images/icons/earning.svg';
-import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
-import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
-
-import GetAppTwoToneIcon from '@material-ui/icons/GetAppOutlined';
-import FileCopyTwoToneIcon from '@material-ui/icons/FileCopyOutlined';
-import PictureAsPdfTwoToneIcon from '@material-ui/icons/PictureAsPdfOutlined';
-import ArchiveTwoToneIcon from '@material-ui/icons/ArchiveOutlined';
+import { Avatar, Box, Card, CardContent, Grid, makeStyles, Typography } from '@material-ui/core';
 import PlayCircleFilledIcon from '@material-ui/icons/PlayCircleFilled';
-
-import './styles.css'
-import { showMusicPlayer } from '../../../store/actions';
 import { useDispatch } from 'react-redux';
+import { showMusicPlayer } from '../../../store/actions';
+import './styles.css'; // Make sure your styles are imported correctly
 
 const useStyles = makeStyles((theme) => ({
     card: {
         backgroundSize: 'cover',
         backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat', 
+        backgroundRepeat: 'no-repeat',
         backgroundColor: theme.palette.purple.main,
         color: '#fff',
         overflow: 'hidden',
@@ -27,7 +17,8 @@ const useStyles = makeStyles((theme) => ({
         zIndex: 0,
         backgroundColor: 'rgba(0, 0, 0, 0.1)', 
         backgroundBlendMode: 'darken',
-        height:'250px'
+        height: '250px',
+        cursor: 'pointer'
     },
     content: {
         padding: '20px !important',
@@ -38,42 +29,44 @@ const useStyles = makeStyles((theme) => ({
     cardHeading: {
         fontSize: '1.125rem',
         fontWeight: 500,
-        padding:'10px',
-        position:'absolute',
-        bottom:0
+        padding: '10px',
+        position: 'absolute',
+        bottom: 0
     }
 }));
 
-const MusicItemCard = ({item}) => {
+const MusicItemCard = ({ item }) => {
     const classes = useStyles();
-      const dispatch = useDispatch();
+    const dispatch = useDispatch();
 
     const handleCardClick = () => {
-        dispatch(showMusicPlayer());
+        dispatch(showMusicPlayer(item)); // Pass the item to the player
     };
 
-
-
     return (
-        <Card onClick={handleCardClick} style={{ backgroundImage: `url(${item.img})` }} className={[classes.card,'card-item']}>
-        <CardContent className={classes.content}>
-            <Grid container direction="column" style={{ flexGrow: 1 }}>
-                <Grid item>
-                    <Grid container justifyContent="space-between">
-                        <Grid item>
-                            <PlayCircleFilledIcon className='play-icon' />
+        <Card
+            onClick={handleCardClick}
+            style={{ backgroundImage: `url(${item.cover_img})` }} // Use cover_img from the API response
+            className={[classes.card, 'card-item']}
+        >
+            <CardContent className={classes.content}>
+                <Grid container direction="column" style={{ flexGrow: 1 }}>
+                    <Grid item>
+                        <Grid container justifyContent="space-between">
+                            <Grid item>
+                                <PlayCircleFilledIcon className="play-icon" />
+                            </Grid>
                         </Grid>
                     </Grid>
+
+                    <Grid item>
+                        <Typography className={[classes.cardHeading, 'card-item-text']}>
+                            {item.visual_desc} {/* Display the visual description */}
+                        </Typography>
+                    </Grid>
                 </Grid>
-                
-                <Grid item>
-                    <Typography className={[classes.cardHeading,'card-item-text']}>
-                        {item.description}
-                    </Typography>
-                </Grid>
-            </Grid>
-        </CardContent>
-    </Card>
+            </CardContent>
+        </Card>
     );
 };
 
