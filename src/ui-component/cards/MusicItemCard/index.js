@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const MusicItemCard = ({ item }) => {
+const MusicItemCard = ({item}) => {
     const classes = useStyles();
     const dispatch = useDispatch();
 
@@ -46,7 +46,7 @@ const MusicItemCard = ({ item }) => {
     return (
         <Card
             onClick={handleCardClick}
-            style={{ backgroundImage: `url(${item.cover_img.startsWith('http') ? item.cover_img : `${BACKEND_HOST}${item.cover_img}`})` }}
+            style={{ backgroundImage: `url(${item.songItem.cover_img.startsWith('http') ? item.songItem.cover_img : `${BACKEND_HOST}${item.songItem.cover_img}`})` }}
             className={classes.card}
         >
             <CardContent className={classes.content}>
@@ -60,7 +60,7 @@ const MusicItemCard = ({ item }) => {
                     </Grid>
                     <Grid item>
                         <Typography className={classes.cardHeading}>
-                            {item.visual_desc}
+                            {item.songItem.visual_desc}
                         </Typography>
                     </Grid>
                 </Grid>

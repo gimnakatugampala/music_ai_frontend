@@ -33,7 +33,7 @@ const MusicPlayer = () => {
                     <div className='row'>
                         <div id="music-icon" className='col-md-6'>
                         <img 
-                                src={currentSong?.cover_img ? `${BACKEND_HOST}${currentSong.cover_img}` : "default-image-url"} 
+                                src={currentSong?.songItem.cover_img ? `${BACKEND_HOST}${currentSong.songItem.cover_img}` : "default-image-url"} 
                                 alt="music-icon" 
                   
                             />
@@ -41,7 +41,7 @@ const MusicPlayer = () => {
                         <div id='music-title' className='col-md-6'>
                             <b>{currentSong?.title || "Default Title"}</b>
                             <br />
-                            <div className="artist"><i>{currentSong?.artist || "Unknown Artist"}</i></div>
+                            <div className="artist"><i>{currentSong?.songItem.artist || "Unknown Artist"}</i></div>
                         </div>
                     </div>
                 </div>
@@ -50,7 +50,7 @@ const MusicPlayer = () => {
                     {isVisible && (
                         <AudioPlayer
                             autoPlay
-                            src={currentSong?.audio_stream_url}
+                            src={currentSong?.songItem.audio_stream_url}
                             onPlay={e => console.log("onPlay")}
                         />
                     )}

@@ -83,7 +83,7 @@ const GenerateMusicInput = () => {
     };
 
     // Fetch audio blobs and get URLs
-    const audioStreamUrls = await fetchAudioSequentially(audioUrls);
+    const audioStreamUrls = await fetchAudioSequentially();
 
     console.log("Audio stream URLs:", audioStreamUrls);
     setaudioBlobsUrls(audioStreamUrls);
