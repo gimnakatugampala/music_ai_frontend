@@ -10,7 +10,7 @@ import Switch from '@material-ui/core/Switch';
 import ErrorAlert from '../../../functions/ErrorAlert';
 import { GenerateMusicBySongDesc, AudioStreamingAPI, GenerateTextVariations, GenerateMusicImage, AddSongDescAPI, AddSongDescItemAPI } from '../../../api';
 
-import { useDispatch } from 'react-redux';
+import { useDispatch , useSelector} from 'react-redux';
 import { addSong  , setLoadingSongGeneration } from '../../../store/musicActions'; // Import the action to add a song
 
 
@@ -29,6 +29,8 @@ const GenerateMusicInput = () => {
   const [generatedImages, setgeneratedImages] = useState(null)
 
   const [audioBlobsUrls, setaudioBlobsUrls] = useState([])
+
+  const { loadingSongGeneration  } = useSelector((state) => state.music || {});
 
 
 
@@ -284,7 +286,26 @@ const GenerateMusicInput = () => {
               </Typography>
             </Box>
 
-            <Box my={2}>
+            
+
+            {loadingSongGeneration ? (
+
+              <Box my={2}>
+                <Button
+                  disableElevation
+                  fullWidth
+                  size="large"
+                  type="submit"
+                  variant="contained"
+                  className={classes.login}
+                >
+                  Generating ..
+                </Button>
+              </Box>
+
+            ) : (
+
+              <Box my={2}>
               <Button
                 onClick={handleSubmitSongDescription}
                 disableElevation
@@ -297,6 +318,12 @@ const GenerateMusicInput = () => {
                 <MusicNoteIcon /> Generate music
               </Button>
             </Box>
+
+            )}
+
+
+
+
           </>
         )}
 
