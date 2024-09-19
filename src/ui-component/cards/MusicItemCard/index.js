@@ -4,6 +4,7 @@ import PlayCircleFilledIcon from '@material-ui/icons/PlayCircleFilled';
 import { useDispatch } from 'react-redux';
 import { showMusicPlayer } from '../../../store/actions';
 import './styles.css'; // Make sure your styles are imported correctly
+import { BACKEND_HOST } from '../../../api';
 
 const useStyles = makeStyles((theme) => ({
     card: {
@@ -46,7 +47,7 @@ const MusicItemCard = ({ item }) => {
     return (
         <Card
             onClick={handleCardClick}
-            style={{ backgroundImage: `url(${item.cover_img})` }} // Use cover_img from the API response
+            style={{ backgroundImage: `url(${item.cover_img.startsWith('http') ? item.cover_img : `${BACKEND_HOST}${item.cover_img}`})` }}
             className={[classes.card, 'card-item']}
         >
             <CardContent className={classes.content}>

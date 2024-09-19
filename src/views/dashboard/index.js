@@ -51,7 +51,7 @@ const Dashboard = () => {
 
                         <Grid container spacing={gridSpacing}>
                             {m.song_items.map((songItem) => (
-                                <Grid key={songItem.id} item lg={6} md={6} sm={6} xs={12}>
+                                <Grid key={songItem.id} item lg={4} md={4} sm={4} xs={12}>
                                     <MusicItemCard item={songItem} /> {/* Passing each song item */}
                                 </Grid>
                             ))}

@@ -3,6 +3,8 @@ import SuccessToast from "../ui-component/toast/SuccessToast";
 import Cookies from "js-cookie";
 
 const BACKEND_LINK = "http://127.0.0.1:8000"
+export const BACKEND_HOST = "http://127.0.0.1:8000/"
+
 const MUSIC_AI_TOKEN = Cookies.get('MUSIC_AI_TOKEN')
 
 

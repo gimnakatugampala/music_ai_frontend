@@ -31,7 +31,7 @@ const musicReducer = (state = initialState, action) => {
         case ADD_SONG:
             return {
                 ...state,
-                music: [...state.music, action.payload], // Append the new song to the music array
+                music: [ action.payload, ...state.music], // Append the new song to the music array
             };
         default:
             return state;
