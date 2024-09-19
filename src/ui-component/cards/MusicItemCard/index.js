@@ -1,9 +1,8 @@
 import React from 'react';
-import { Avatar, Box, Card, CardContent, Grid, makeStyles, Typography } from '@material-ui/core';
+import { Card, CardContent, Grid, makeStyles, Typography } from '@material-ui/core';
 import PlayCircleFilledIcon from '@material-ui/icons/PlayCircleFilled';
 import { useDispatch } from 'react-redux';
 import { showMusicPlayer } from '../../../store/actions';
-import './styles.css'; // Make sure your styles are imported correctly
 import { BACKEND_HOST } from '../../../api';
 
 const useStyles = makeStyles((theme) => ({
@@ -16,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
         overflow: 'hidden',
         position: 'relative',
         zIndex: 0,
-        backgroundColor: 'rgba(0, 0, 0, 0.1)', 
+        backgroundColor: 'rgba(0, 0, 0, 0.1)',
         backgroundBlendMode: 'darken',
         height: '250px',
         cursor: 'pointer'
@@ -25,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
         padding: '20px !important',
         position: 'relative',
         height: '100%',
-        zIndex: 1, 
+        zIndex: 1,
     },
     cardHeading: {
         fontSize: '1.125rem',
@@ -48,7 +47,7 @@ const MusicItemCard = ({ item }) => {
         <Card
             onClick={handleCardClick}
             style={{ backgroundImage: `url(${item.cover_img.startsWith('http') ? item.cover_img : `${BACKEND_HOST}${item.cover_img}`})` }}
-            className={[classes.card, 'card-item']}
+            className={classes.card}
         >
             <CardContent className={classes.content}>
                 <Grid container direction="column" style={{ flexGrow: 1 }}>
@@ -59,10 +58,9 @@ const MusicItemCard = ({ item }) => {
                             </Grid>
                         </Grid>
                     </Grid>
-
                     <Grid item>
-                        <Typography className={[classes.cardHeading, 'card-item-text']}>
-                            {item.visual_desc} {/* Display the visual description */}
+                        <Typography className={classes.cardHeading}>
+                            {item.visual_desc}
                         </Typography>
                     </Grid>
                 </Grid>

@@ -371,3 +371,19 @@ export const AddSongDescItemAPI = async (songItem) => {
     throw error;
   }
 };
+
+export const DownloadAudioAPI = async (clip_id) => {
+  const requestOptions = {
+    method: "GET",
+    redirect: "follow"
+  };
+
+  try {
+    const response = await fetch(`${BACKEND_LINK}/download-song/${clip_id}`, requestOptions);
+    const result = await response.json();
+    return result.message; // This will return the path to the song
+  } catch (error) {
+    console.error("Error downloading the song:", error);
+    return null;
+  }
+}

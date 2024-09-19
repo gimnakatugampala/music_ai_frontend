@@ -6,3 +6,7 @@ export const FETCH_MUSIC_REQUEST = 'FETCH_MUSIC_REQUEST';
 
 // New action type for adding a song
 export const ADD_SONG = 'ADD_SONG';
+
+// Music PLayer
+export const SHOW_MUSIC_PLAYER = 'SHOW_MUSIC_PLAYER';
+export const HIDE_MUSIC_PLAYER = 'HIDE_MUSIC_PLAYER';

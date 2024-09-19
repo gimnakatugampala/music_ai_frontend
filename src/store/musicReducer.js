@@ -1,12 +1,13 @@
-import { FETCH_MUSIC_SUCCESS, FETCH_MUSIC_FAILURE, FETCH_MUSIC_REQUEST, ADD_SONG } from './types';
+import { FETCH_MUSIC_SUCCESS, FETCH_MUSIC_FAILURE, FETCH_MUSIC_REQUEST, ADD_SONG , SHOW_MUSIC_PLAYER, HIDE_MUSIC_PLAYER } from './types';
 
 const initialState = {
-    music: [], // Store songs here
+    music: [],
     loading: false,
-    error: null
+    error: null,
+    isVisible: false,
+    currentSong: null,
 };
 
-// Reducer function
 const musicReducer = (state = initialState, action) => {
     switch (action.type) {
         case FETCH_MUSIC_REQUEST:
@@ -31,7 +32,19 @@ const musicReducer = (state = initialState, action) => {
         case ADD_SONG:
             return {
                 ...state,
-                music: [ action.payload, ...state.music], // Append the new song to the music array
+                music: [action.payload, ...state.music],
+            };
+        case SHOW_MUSIC_PLAYER:
+            return {
+                ...state,
+                isVisible: true,
+                currentSong: action.payload,
+            };
+        case HIDE_MUSIC_PLAYER:
+            return {
+                ...state,
+                isVisible: false,
+                currentSong: null,
             };
         default:
             return state;

@@ -118,12 +118,17 @@ const GenerateMusicInput = () => {
     // ------------- Save Song ---------------
 
     const addSongResponse = await AddSongDescAPI(newSong, songDesc);
+
     if (addSongResponse.responseCode === "200") {
       const songId = addSongResponse.responseData.id;
       console.log("Song successfully added:", addSongResponse.responseData);
 
-      // Add Song Items sequentially
+      // --------------------- Add Song Items sequentially ------------------
       for (let index = 0; index < audioUrls.length; index++) {
+
+        //  Inluclude download & save audio_download_url
+        
+
         const songItem = {
           cover_img: musicImageResult.file_paths[index], // Set image from generated result
           visual_desc: textVariationResult.result.data.json.outputs[index]?.visual || "A description of the song's visual elements.",
@@ -135,8 +140,11 @@ const GenerateMusicInput = () => {
         };
 
         try {
+          // Save Song Items
           const result = await AddSongDescItemAPI(songItem);
+
           console.log("Song item added successfully:", result);
+
         } catch (error) {
           console.error("Failed to add song item:", error);
         }
