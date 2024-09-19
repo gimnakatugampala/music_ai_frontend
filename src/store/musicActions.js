@@ -10,7 +10,7 @@ export const fetchMusicData = () => async (dispatch) => {
         console.log(result);
         dispatch({
             type: FETCH_MUSIC_SUCCESS,
-            payload: result.responseData, // Adjust based on your API response structure
+            payload: result.responseData.reverse(), // Adjust based on your API response structure
         });
     } catch (error) {
         dispatch({
