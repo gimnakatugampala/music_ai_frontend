@@ -123,16 +123,15 @@ const GenerateMusicInput = () => {
       console.log("Song successfully added:", addSongResponse.responseData);
 
       // Add Song Items sequentially
-      for (let index = 0; index < audioStreamUrls.length; index++) {
-        const streamUrl = audioStreamUrls[index];
+      for (let index = 0; index < audioUrls.length; index++) {
         const songItem = {
           cover_img: musicImageResult.file_paths[index], // Set image from generated result
           visual_desc: textVariationResult.result.data.json.outputs[index]?.visual || "A description of the song's visual elements.",
           variation: textVariationResult.result.data.json.outputs[index]?.variation || "Original",
-          audio_stream_url: streamUrl,
-          audio_download_url: streamUrl,
+          audio_stream_url: audioUrls[index],
+          audio_download_url: audioUrls[index],
           generated_song_id: Number.parseInt(songId),
-          clip_id: streamUrl.split('/').pop() // Ensure this matches your clip_id extraction logic
+          clip_id: audioUrls[index].split('/').pop().replace('.mp3', '') // Ensure this matches your clip_id extraction logic
         };
 
         try {
