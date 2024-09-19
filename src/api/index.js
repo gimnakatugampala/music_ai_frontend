@@ -349,31 +349,25 @@ export const AddSongDescAPI = async (song,songDesc) => {
 };
 
 
-export const AddSongDescItemAPI = async () => {
-
+export const AddSongDescItemAPI = async (songItem) => {
   const myHeaders = new Headers();
-myHeaders.append("Content-Type", "application/json");
+  myHeaders.append("Content-Type", "application/json");
 
-const raw = JSON.stringify({
-  "cover_img": "https://example.com/cover.jpg",
-  "visual_desc": "A description of the song's visual elements.",
-  "variation": "Original",
-  "audio_stream_url": "https://example.com/stream.mp3",
-  "audio_download_url": "https://example.com/download.mp3",
-  "generated_song_id": 1,
-  "clip_id": 123
-});
+  const raw = JSON.stringify(songItem);
 
-const requestOptions = {
-  method: "POST",
-  headers: myHeaders,
-  body: raw,
-  redirect: "follow"
+  const requestOptions = {
+    method: "POST",
+    headers: myHeaders,
+    body: raw,
+    redirect: "follow"
+  };
+
+  try {
+    const response = await fetch(`${BACKEND_LINK}/add-song-item/`, requestOptions);
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.error("Error adding song item:", error);
+    throw error;
+  }
 };
-
-fetch(`${BACKEND_LINK}/add-song-item/`, requestOptions)
-  .then((response) => response.text())
-  .then((result) => console.log(result))
-  .catch((error) => console.error(error));
-
-}

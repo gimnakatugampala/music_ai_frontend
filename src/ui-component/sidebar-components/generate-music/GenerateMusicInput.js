@@ -8,7 +8,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import MusicNoteIcon from '@material-ui/icons/MusicNote';
 import Switch from '@material-ui/core/Switch';
 import ErrorAlert from '../../../functions/ErrorAlert';
-import { GenerateMusicBySongDesc, AudioStreamingAPI, GenerateTextVariations, GenerateMusicImage, AddSongDescAPI } from '../../../api';
+import { GenerateMusicBySongDesc, AudioStreamingAPI, GenerateTextVariations, GenerateMusicImage, AddSongDescAPI, AddSongDescItemAPI } from '../../../api';
 
 import { useDispatch } from 'react-redux';
 import { addSong } from '../../../store/musicActions'; // Import the action to add a song
@@ -117,17 +117,38 @@ const GenerateMusicInput = () => {
 
     // ------------- Save Song ---------------
 
-    // Call AddSongDescAPI after dispatching the new song
-    const response = await AddSongDescAPI(newSong,songDesc);
+    const addSongResponse = await AddSongDescAPI(newSong, songDesc);
+    if (addSongResponse.responseCode === "200") {
+      const songId = addSongResponse.responseData.id;
+      console.log("Song successfully added:", addSongResponse.responseData);
 
-    console.log("AddSongDescAPI response:", response);
+      // Add Song Items sequentially
+      for (let index = 0; index < audioStreamUrls.length; index++) {
+        const streamUrl = audioStreamUrls[index];
+        const songItem = {
+          cover_img: musicImageResult.file_paths[index], // Set image from generated result
+          visual_desc: textVariationResult.result.data.json.outputs[index]?.visual || "A description of the song's visual elements.",
+          variation: textVariationResult.result.data.json.outputs[index]?.variation || "Original",
+          audio_stream_url: streamUrl,
+          audio_download_url: streamUrl,
+          generated_song_id: Number.parseInt(songId),
+          clip_id: streamUrl.split('/').pop() // Ensure this matches your clip_id extraction logic
+        };
 
-    // Handle the response if needed, e.g., update UI or notify the user
-    if (response.responseCode == "200") {
-      console.log("Song successfully added:", response.responseData);
+        try {
+          const result = await AddSongDescItemAPI(songItem);
+          console.log("Song item added successfully:", result);
+        } catch (error) {
+          console.error("Failed to add song item:", error);
+        }
+      }
+
+      console.log("All song items added successfully.");
     } else {
       ErrorAlert("Failed to add song.");
     }
+
+
 
     // Save Song Item
   
