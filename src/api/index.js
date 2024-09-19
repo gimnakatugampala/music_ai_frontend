@@ -54,7 +54,11 @@ export const SignUpUser = async(rawData,setbtnLoading) =>{
 
         setbtnLoading(false)
 
-        Cookies.set('music_ai_user', JSON.stringify(rawData))
+
+        // Append user_id to the rawData
+        const updatedRawData = { ...rawData, user_id: result.responseData.user_id };
+
+        Cookies.set('music_ai_user', JSON.stringify(updatedRawData))
 
         setTimeout(() => {
           window.location.href = "/"
@@ -101,7 +105,9 @@ fetch(`${BACKEND_LINK}/signin/`, requestOptions)
       SuccessToast(result.responseMsg)
       setbtnLoading(false)
 
-      Cookies.set('music_ai_user', JSON.stringify(rawData))
+      const updatedRawData = { ...rawData, user_id: result.responseData.user_id };
+
+      Cookies.set('music_ai_user', JSON.stringify(updatedRawData))
 
       setTimeout(() => {
         window.location.href = "/"
@@ -147,7 +153,9 @@ fetch(`${BACKEND_LINK}/google-auth/`, requestOptions)
 
       setbtnLoading(false)
 
-      Cookies.set('music_ai_user', JSON.stringify(rawData))
+      const updatedRawData = { ...rawData, user_id: result.responseData.user_id };
+
+      Cookies.set('music_ai_user', JSON.stringify(updatedRawData))
 
       setTimeout(() => {
         window.location.href = "/"
