@@ -23,7 +23,7 @@ const Dashboard = () => {
     }, [dispatch]);
 
     // If data is still loading, display a loading message
-    if (loading || loadingSongGeneration) {
+    if (loading) {
         return (
             <Grid container spacing={gridSpacing}>
                 {Array.from({ length: 3 }).map((_, index) => ( // Adjust the length as needed
@@ -52,6 +52,25 @@ const Dashboard = () => {
 
     return (
         <Grid container spacing={gridSpacing}>
+
+
+            {/* Temp Save Loading */}
+            {loadingSongGeneration && (
+            <Grid  item xs={12} my={2}>
+                        <Box my={2}>
+                            <Skeleton width={700} height={40} style={{ marginBottom: '10px' }} /> {/* Title Skeleton */}
+                            <Skeleton width={300} height={30} style={{ marginBottom: '20px' }} /> {/* Date Skeleton */}
+                        </Box>
+                        <Grid container spacing={gridSpacing}>
+                            {Array.from({ length: 2 }).map((_, songIndex) => ( // Placeholder for song items
+                                <Grid key={songIndex} item lg={4} md={4} sm={4} xs={12}>
+                                    <Skeleton style={{borderRadius:'5%'}} height={250} /> {/* Skeleton for MusicItemCard */}
+                                </Grid>
+                            ))}
+                        </Grid>
+            </Grid>
+            )}
+
             {music.length > 0 ? music.map((m, index) => (
                 <Grid key={index} item xs={12} my={2}>
                     <Box my={2}>
