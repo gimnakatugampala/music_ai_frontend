@@ -7,6 +7,7 @@ import { BACKEND_HOST } from '../../api';
 
 import './styles.css'
 import constant from '../../themes/constant';
+import CalculateDateTime from '../../functions/CalculateDateTime';
 const useStyles = makeStyles((theme) => ({
   musicPlayer: {
     position: 'fixed',
@@ -41,7 +42,7 @@ const MusicPlayer = () => {
                         <div id='music-title' className='col-md-6'>
                             <b>{currentSong?.title || "Default Title"}</b>
                             <br />
-                            <div className="artist"><i>{currentSong?.songItem.artist || "Unknown Artist"}</i></div>
+                            <div className="artist"><i>{CalculateDateTime(currentSong?.created_date)}</i></div>
                         </div>
                     </div>
                 </div>
