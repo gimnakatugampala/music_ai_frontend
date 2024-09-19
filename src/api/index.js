@@ -8,7 +8,7 @@ export const BACKEND_HOST = "http://127.0.0.1:8000/"
 const MUSIC_AI_TOKEN = Cookies.get('MUSIC_AI_TOKEN')
 
 
-let CURRENT_USER = null;
+export let CURRENT_USER = null;
 
 try {
   const userCookie = Cookies.get('music_ai_user');
