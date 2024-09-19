@@ -8,16 +8,27 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import MusicNoteIcon from '@material-ui/icons/MusicNote';
 import Switch from '@material-ui/core/Switch';
 import ErrorAlert from '../../../functions/ErrorAlert';
-import { GenerateMusicBySongDesc, AudioStreamingAPI, AudioSreamingAPI, GenerateTextVariations, GenerateMusicImage } from '../../../api';
+import { GenerateMusicBySongDesc, AudioStreamingAPI, GenerateTextVariations, GenerateMusicImage } from '../../../api';
+
+import { useDispatch } from 'react-redux';
+import { addSong } from '../../../store/musicActions'; // Import the action to add a song
+
 
 const GenerateMusicInput = () => {
   const classes = useThemeStyles();
+
+  const dispatch = useDispatch(); // Initialize dispatch
+
+
   const [lyrics, setLyrics] = useState("");
   const [songDesc, setSongDesc] = useState("");
   const [switchSingType, setSwitchSingType] = useState(true);
   const [audioUrls, setAudioUrls] = useState([]); // state for storing audio URLs
 
   const [textVariations, settextVariations] = useState(null)
+  const [generatedImages, setgeneratedImages] = useState(null)
+
+  const [audioBlobsUrls, setaudioBlobsUrls] = useState([])
 
 
 
@@ -27,35 +38,102 @@ const GenerateMusicInput = () => {
 
   // Generate Song by description
   const handleSubmitSongDescription = async () => {
-    if (songDesc === "") {
+    if (songDesc == "") {
       ErrorAlert("Please enter song description");
       return;
     }
   
     try {
-      console.log("Calling GenerateMusicBySongDesc, GenerateTextVariations, and GenerateMusicImage APIs...");
-  
-      // Create promises for all the API calls
-      const musicDescPromise = GenerateMusicBySongDesc(songDesc); // Generate music by description
-      const textVariationPromise = GenerateTextVariations(songDesc, settextVariations); // Generate text variations
-      const musicImagePromise = GenerateMusicImage({ "visuals": [songDesc, songDesc] }); // Generate music image
-  
-      // Use Promise.all to run all the promises concurrently
+      // Call APIs concurrently
       const [audioUrls, textVariationResult, musicImageResult] = await Promise.all([
-        musicDescPromise,
-        textVariationPromise,
-        musicImagePromise
+        GenerateMusicBySongDesc(songDesc),
+        GenerateTextVariations(songDesc),
+        GenerateMusicImage({ "visuals": [songDesc, songDesc] }),
       ]);
   
-      // After all APIs have resolved, handle the results
-      console.log("Generated audio URLs:", audioUrls);
+       // After all APIs have resolved, handle the results
       setAudioUrls(audioUrls); // Assuming you want to store audio URLs in state
+      console.log("Generated audio URLs:", audioUrls);
   
+      settextVariations(textVariationResult); // Set text variations
       console.log("Generated text variations:", textVariationResult);
-      // You can process the text variations as needed here
   
+      setgeneratedImages(musicImageResult); // Set generated images
       console.log("Generated music images:", musicImageResult);
-      // Handle the music images if needed
+  
+      // Create audioStreamUrls from the audio URLs
+         // Sequentially fetch and convert audio URLs to blob URLs
+    const fetchAudioSequentially = async (urls) => {
+      const audioBlobUrls = [];
+
+      for (const url of urls) {
+        try {
+          console.log(`Fetching audio from URL: ${url}`);
+          const audioBlob = await AudioStreamingAPI(url);
+          const audioStreamUrl = URL.createObjectURL(audioBlob);
+          audioBlobUrls.push(audioStreamUrl);
+          console.log(`Successfully fetched and created URL for: ${url}`);
+        } catch (error) {
+          console.error(`Failed to fetch audio from URL: ${url}`, error);
+          // Optionally handle or log the error as needed
+        }
+      }
+
+      return audioBlobUrls;
+    };
+
+    // Fetch audio blobs and get URLs
+    const audioStreamUrls = await fetchAudioSequentially(audioUrls);
+
+    console.log("Audio stream URLs:", audioStreamUrls);
+    setaudioBlobsUrls(audioStreamUrls);
+
+    // Temperory Song Data
+    const newSong = {
+      id: Date.now(), // Temporary unique ID, you can update this based on actual response
+      title: textVariationResult.result.data.json.outputs[0]?.title, // Set title from generated result
+      created_date: new Date().toISOString(), // Set creation date
+      song_items: audioStreamUrls.map((streamUrl, index) => {
+        // Extract the clip ID from audio URL by removing everything before the last '/'
+        const clip_id = streamUrl.split('/').pop()
+    
+        return {
+          id: index + 1,
+          cover_img: musicImageResult.file_paths[index], // Set image from generated result
+          visual_desc: textVariationResult.result.data.json.outputs[index]?.visual || "A description of the song's visual elements.",
+          variation: textVariationResult.result.data.json.outputs[index]?.variation || "Original", // Set variation from generated result
+          audio_stream_url: streamUrl, // Set the audio stream URL (blob URL)
+          audio_download_url: streamUrl, // Same blob URL for download
+          generated_song_id: index + 1,
+          clip_id: clip_id, // Set extracted clip ID
+        };
+      }),
+    };
+    
+
+    console.log(newSong)
+
+    dispatch(addSong(newSong));
+  
+      // // Create a new song object to be added to Redux
+      // const newSong = {
+      //   id: Date.now(), // Temporary unique ID, you can update this based on actual response
+      //   title: "Generated Song", // Add any title logic if needed
+      //   created_date: new Date().toISOString(), // Set creation date
+      //   song_items: audioStreamUrls.map((streamUrl, index) => ({
+      //     id: index + 1,
+      //     cover_img: musicImageResult[0]?.url, // Set image from generated result
+      //     visual_desc: "A description of the song's visual elements.",
+      //     variation: textVariationResult[index]?.variation || "Original", // Set variation from generated result
+      //     audio_stream_url: streamUrl, // Set the audio stream URL (blob URL)
+      //     audio_download_url: streamUrl, // Same blob URL for download
+      //     generated_song_id: index + 1,
+      //     clip_id: 123 + index, // Example clip ID, adjust if needed
+      //   })),
+      // };
+  
+      // // Dispatch the addSong action to add the new song to the Redux store
+      // dispatch(addSong(newSong));
   
     } catch (error) {
       console.error("Error in handleSubmitSongDescription:", error);
@@ -63,40 +141,35 @@ const GenerateMusicInput = () => {
     }
   };
 
-  // Handle the onCanPlay event to start playback
-
-  const [audioUrl, setAudioUrl] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const audioRef = useRef(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-
-
   useEffect(() => {
-    const fetchAudio = async () => {
-      try {
-        const blob = await AudioSreamingAPI();
-        const url = URL.createObjectURL(blob);
-        setAudioUrl(url);
-        setLoading(false);
-      } catch (error) {
-        console.error("Failed to fetch audio:", error);
-        setLoading(false);
-      }
-    };
 
-    fetchAudio();
+    // Temperory Data
+      //  const newSong = {
+      //   id: Date.now(), // Temporary unique ID, you can update this based on actual response
+      //   title: textVariations.result.data.json.outputs[0]?.title, // Add any title logic if needed
+      //   created_date: new Date().toISOString(), // Set creation date
+      //   song_items: audioBlobsUrls.map((streamUrl, index) => ({
+      //     id: index + 1,
+      //     cover_img: generatedImages.file_paths[index], // Set image from generated result
+      //     visual_desc: textVariations.result.data.json.outputs[index]?.visual || "A description of the song's visual elements.",
+      //     variation: textVariations.result.data.json.outputs[index]?.variation || "Original", // Set variation from generated result
+      //     audio_stream_url: streamUrl, // Set the audio stream URL (blob URL)
+      //     audio_download_url: streamUrl, // Same blob URL for download
+      //     generated_song_id: index + 1,
+      //     clip_id: streamUrl.match(/\/([a-z0-9-]+)\.mp3$/i)[1], // Example clip ID, adjust if needed
+      //   })),
+      // };
+
+
+      // Download the audio from the cdn link API
+
+      // Save to the DB
+
+      // console.log(newSong)
+  
   }, []);
+  
 
-  const handlePlayPause = () => {
-    if (audioRef.current) {
-      if (isPlaying) {
-        audioRef.current.pause();
-      } else {
-        audioRef.current.play();
-      }
-      setIsPlaying(!isPlaying);
-    }
-  };
 
   return (
     <div>
@@ -179,29 +252,7 @@ const GenerateMusicInput = () => {
           </>
         )}
 
-        {/* Display audio clips */}
-        <Box mt={2}>
-      {loading ? (
-        <Typography variant="body1">Loading...</Typography>
-      ) : audioUrl ? (
-        <div>
-          <Typography variant="h6">Generated Music Clip</Typography>
-          <audio
-            ref={audioRef}
-            controls
-            src={audioUrl}
-            style={{ width: '100%' }}
-          >
-            Your browser does not support the audio element.
-          </audio>
-          <Button onClick={handlePlayPause}>
-            {isPlaying ? "Pause" : "Play"}
-          </Button>
-        </div>
-      ) : (
-        <Typography variant="body1">No audio available</Typography>
-      )}
-    </Box>
+     
       </Box>
     </div>
   );

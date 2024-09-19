@@ -161,43 +161,42 @@ fetch(`${BACKEND_LINK}/google-auth/`, requestOptions)
   }
 
 
-  export const GenerateTextVariations = async(songDesc,settextVariations) =>{
-
+  export const GenerateTextVariations = async (songDesc) => {
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-
-  const raw = JSON.stringify({
-    "json": {
-      "text": `${songDesc}`,
-      "user_id": "509c8c77-ce2e-4822-b29a-d3aae768b3ba",
-      "is_augment_prompt": true,
-      "lyrics": `${songDesc}`,
-      "is_public": true,
-      "curate_variations": false
+  
+    const raw = JSON.stringify({
+      "json": {
+        "text": songDesc,
+        "user_id": "509c8c77-ce2e-4822-b29a-d3aae768b3ba",
+        "is_augment_prompt": true,
+        "lyrics": songDesc,
+        "is_public": true,
+        "curate_variations": false
+      }
+    });
+  
+    const requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow"
+    };
+  
+    try {
+      const response = await fetch(`${BACKEND_LINK}/generate-text-variations/`, requestOptions);
+      const result = await response.json();
+      console.log(result);
+      return result;
+    } catch (error) {
+      console.error(error);
+      throw error;
     }
-  });
-
-const requestOptions = {
-  method: "POST",
-  headers: myHeaders,
-  body: raw,
-  redirect: "follow"
-};
-
-fetch(`${BACKEND_LINK}/generate-text-variations/`, requestOptions)
-  .then((response) => response.json())
-  .then((result) => {
-    console.log(result)
-    settextVariations(result)
-  })
-  .catch((error) => console.error(error));
+  };
 
 
-  }
-
-  export const GenerateMusicImage = async (visuals) => {
-
-    const myHeaders = new Headers();
+export const GenerateMusicImage = async (visuals) => {
+  const myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
 
   const raw = JSON.stringify(visuals);
@@ -209,12 +208,16 @@ fetch(`${BACKEND_LINK}/generate-text-variations/`, requestOptions)
     redirect: "follow"
   };
 
-  fetch(`${BACKEND_LINK}/create-images/`, requestOptions)
-    .then((response) => response.json())
-    .then((result) => console.log(result))
-    .catch((error) => console.error(error));
-
+  try {
+    const response = await fetch(`${BACKEND_LINK}/create-images/`, requestOptions);
+    const result = await response.json();
+    console.log(result);
+    return result;
+  } catch (error) {
+    console.error(error);
+    throw error;
   }
+};
 
 
 // api.js
@@ -240,6 +243,8 @@ export const GenerateMusicBySongDesc = async (songDesc) => {
     const response = await fetch(`${BACKEND_LINK}/generate/description-mode`, requestOptions);
     const result = await response.json();
 
+    console.log()
+
     // Save the Token
     Cookies.set('MUSIC_AI_TOKEN', result.token)
 
@@ -255,10 +260,10 @@ export const GenerateMusicBySongDesc = async (songDesc) => {
 };
 
 
-export const AudioSreamingAPI = async () => {
+export const AudioStreamingAPI = async (audioLink) => {
 
   const myHeaders = new Headers();
-  myHeaders.append("Authorization", `Bearer ${MUSIC_AI_TOKEN}`);
+  myHeaders.append("Authorization",`Bearer ${MUSIC_AI_TOKEN}`);
   myHeaders.append("Referer", "https://suno.com");
   myHeaders.append("Origin", "https://suno.com");
 

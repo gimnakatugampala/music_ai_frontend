@@ -1,7 +1,7 @@
-import { FETCH_MUSIC_SUCCESS, FETCH_MUSIC_FAILURE, FETCH_MUSIC_REQUEST } from './types';
+import { FETCH_MUSIC_SUCCESS, FETCH_MUSIC_FAILURE, FETCH_MUSIC_REQUEST, ADD_SONG } from './types';
 
 const initialState = {
-    music: [],
+    music: [], // Store songs here
     loading: false,
     error: null
 };
@@ -27,6 +27,11 @@ const musicReducer = (state = initialState, action) => {
                 ...state,
                 error: action.payload,
                 loading: false
+            };
+        case ADD_SONG:
+            return {
+                ...state,
+                music: [...state.music, action.payload], // Append the new song to the music array
             };
         default:
             return state;
