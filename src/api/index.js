@@ -316,3 +316,64 @@ export const GetSongsByUserEmail = async () => {
     throw error; // Throw the error to be handled in the action
   }
 };
+
+
+export const AddSongDescAPI = async (song,songDesc) => {
+  const myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+
+  const raw = JSON.stringify({
+    title: song.title,
+    user_song_description: songDesc, // Assuming description is based on the first item
+    custom_lyrics: null, // Adjust if you want to handle lyrics
+    created_date: song.created_date,
+    song_type_id: 1, // Adjust based on your logic
+    user_id: CURRENT_USER.user_id
+  });
+
+  const requestOptions = {
+    method: "POST",
+    headers: myHeaders,
+    body: raw,
+    redirect: "follow"
+  };
+
+  try {
+    const response = await fetch(`${BACKEND_LINK}/add-songs/`, requestOptions);
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.error("Error adding song:", error);
+    throw error;
+  }
+};
+
+
+export const AddSongDescItemAPI = async () => {
+
+  const myHeaders = new Headers();
+myHeaders.append("Content-Type", "application/json");
+
+const raw = JSON.stringify({
+  "cover_img": "https://example.com/cover.jpg",
+  "visual_desc": "A description of the song's visual elements.",
+  "variation": "Original",
+  "audio_stream_url": "https://example.com/stream.mp3",
+  "audio_download_url": "https://example.com/download.mp3",
+  "generated_song_id": 1,
+  "clip_id": 123
+});
+
+const requestOptions = {
+  method: "POST",
+  headers: myHeaders,
+  body: raw,
+  redirect: "follow"
+};
+
+fetch(`${BACKEND_LINK}/add-song-item/`, requestOptions)
+  .then((response) => response.text())
+  .then((result) => console.log(result))
+  .catch((error) => console.error(error));
+
+}

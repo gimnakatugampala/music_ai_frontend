@@ -8,7 +8,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import MusicNoteIcon from '@material-ui/icons/MusicNote';
 import Switch from '@material-ui/core/Switch';
 import ErrorAlert from '../../../functions/ErrorAlert';
-import { GenerateMusicBySongDesc, AudioStreamingAPI, GenerateTextVariations, GenerateMusicImage } from '../../../api';
+import { GenerateMusicBySongDesc, AudioStreamingAPI, GenerateTextVariations, GenerateMusicImage, AddSongDescAPI } from '../../../api';
 
 import { useDispatch } from 'react-redux';
 import { addSong } from '../../../store/musicActions'; // Import the action to add a song
@@ -114,6 +114,22 @@ const GenerateMusicInput = () => {
     console.log(newSong)
 
     dispatch(addSong(newSong));
+
+    // ------------- Save Song ---------------
+
+    // Call AddSongDescAPI after dispatching the new song
+    const response = await AddSongDescAPI(newSong,songDesc);
+
+    console.log("AddSongDescAPI response:", response);
+
+    // Handle the response if needed, e.g., update UI or notify the user
+    if (response.responseCode == "200") {
+      console.log("Song successfully added:", response.responseData);
+    } else {
+      ErrorAlert("Failed to add song.");
+    }
+
+    // Save Song Item
   
       // // Create a new song object to be added to Redux
       // const newSong = {
