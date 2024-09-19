@@ -10782,6 +10782,11 @@
   "resolved" "https://registry.npmjs.org/react-is/-/react-is-17.0.2.tgz"
   "version" "17.0.2"
 
+"react-loading-skeleton@^3.4.0":
+  "integrity" "sha512-1oJEBc9+wn7BbkQQk7YodlYEIjgeR+GrRjD+QXkVjwZN7LGIcAFHrx4NhT7UHGBxNY1+zax3c+Fo6XQM4R7CgA=="
+  "resolved" "https://registry.npmjs.org/react-loading-skeleton/-/react-loading-skeleton-3.4.0.tgz"
+  "version" "3.4.0"
+
 "react-material-ui-carousel@^2.2.4":
   "integrity" "sha512-ibCAJPGdglZV5Xmf+DTrriEcf+HO16i/SbXDr1BnwJWP+GyNybQHNKI5h7GaCCBFB4sZnR87FVQyckfugxyLvw=="
   "resolved" "https://registry.npmjs.org/react-material-ui-carousel/-/react-material-ui-carousel-2.2.6.tgz"
