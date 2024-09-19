@@ -1,4 +1,4 @@
-import { FETCH_MUSIC_SUCCESS, FETCH_MUSIC_FAILURE, FETCH_MUSIC_REQUEST, ADD_SONG , SHOW_MUSIC_PLAYER, HIDE_MUSIC_PLAYER } from './types';
+import { FETCH_MUSIC_SUCCESS, FETCH_MUSIC_FAILURE, FETCH_MUSIC_REQUEST, ADD_SONG , SHOW_MUSIC_PLAYER, HIDE_MUSIC_PLAYER , SET_LOADING_SONG_GENERATION } from './types';
 
 const initialState = {
     music: [],
@@ -6,6 +6,7 @@ const initialState = {
     error: null,
     isVisible: false,
     currentSong: null,
+    loadingSongGeneration: false, // Add new state for song generation loading
 };
 
 const musicReducer = (state = initialState, action) => {
@@ -46,6 +47,11 @@ const musicReducer = (state = initialState, action) => {
                 isVisible: false,
                 currentSong: null,
             };
+        case SET_LOADING_SONG_GENERATION: // Handle loading state for song generation
+        return {
+            ...state,
+            loadingSongGeneration: action.payload,
+        };
         default:
             return state;
     }

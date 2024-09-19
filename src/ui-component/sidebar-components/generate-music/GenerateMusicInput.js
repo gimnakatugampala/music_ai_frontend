@@ -11,7 +11,7 @@ import ErrorAlert from '../../../functions/ErrorAlert';
 import { GenerateMusicBySongDesc, AudioStreamingAPI, GenerateTextVariations, GenerateMusicImage, AddSongDescAPI, AddSongDescItemAPI } from '../../../api';
 
 import { useDispatch } from 'react-redux';
-import { addSong } from '../../../store/musicActions'; // Import the action to add a song
+import { addSong  , setLoadingSongGeneration } from '../../../store/musicActions'; // Import the action to add a song
 
 
 const GenerateMusicInput = () => {
@@ -42,6 +42,8 @@ const GenerateMusicInput = () => {
       ErrorAlert("Please enter song description");
       return;
     }
+
+    dispatch(setLoadingSongGeneration(true)); // Start loading
   
     try {
       // Call APIs concurrently
@@ -83,7 +85,7 @@ const GenerateMusicInput = () => {
     };
 
     // Fetch audio blobs and get URLs
-    const audioStreamUrls = await fetchAudioSequentially();
+    const audioStreamUrls = await fetchAudioSequentially(audioUrls);
 
     console.log("Audio stream URLs:", audioStreamUrls);
     setaudioBlobsUrls(audioStreamUrls);
@@ -114,6 +116,8 @@ const GenerateMusicInput = () => {
     console.log(newSong)
 
     dispatch(addSong(newSong));
+
+    dispatch(setLoadingSongGeneration(false)); 
 
     // ------------- Save Song ---------------
 

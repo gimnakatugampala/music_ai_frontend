@@ -10,7 +10,7 @@ import 'react-loading-skeleton/dist/skeleton.css';
 
 const Dashboard = () => {
     const dispatch = useDispatch();
-    const { music = [], loading, error } = useSelector((state) => state.music || {});
+    const { music = [], loading, error , loadingSongGeneration  } = useSelector((state) => state.music || {});
 
     useEffect(() => {
         let isMounted = true; // Flag to prevent state updates if the component is unmounted
@@ -23,7 +23,7 @@ const Dashboard = () => {
     }, [dispatch]);
 
     // If data is still loading, display a loading message
-    if (loading) {
+    if (loading || loadingSongGeneration) {
         return (
             <Grid container spacing={gridSpacing}>
                 {Array.from({ length: 3 }).map((_, index) => ( // Adjust the length as needed
