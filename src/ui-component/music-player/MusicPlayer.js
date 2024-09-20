@@ -9,28 +9,32 @@ import { hideMusicPlayer } from '../../store/actions';
 import './styles.css';
 import CalculateDateTime from '../../functions/CalculateDateTime';
 
+
 const useStyles = makeStyles((theme) => ({
   musicPlayer: {
     position: 'relative',
     position: 'fixed',
-    bottom: '-100%',
+    bottom: '-100%', // Start off-screen
     left: 0,
     width: '100%',
     backgroundColor: '#5e35b1',
     boxShadow: '0 -2px 10px rgba(0,0,0,0.1)',
     transition: 'bottom 0.5s ease-in',
-    zIndex: 1000,
+    zIndex: 1000, // Ensure it appears above other elements
+    '&:hover $closeButton': {
+      opacity: 1, // Show close button on hover
+    },
   },
   musicPlayerVisible: {
-    bottom: 0,
+    bottom: 0, // End position
   },
   closeButton: {
-    position: 'absolute',
-    top: '-43%',
-    right: '-48%',
-    color: '#fff',
-    zIndex: 1001,
-    opacity: 0,
+    position: 'absolute', // Position absolutely
+    top: '-43%',          // Align 10px from the top
+    right: '-48%',       // Align 10px from the right
+    color: '#fff',        // White color for contrast
+    zIndex: 1001,    // Higher than the music player itself
+    opacity: 0, // Initially hidden
     transition: 'opacity 0.3s ease-in',
   },
 }));
