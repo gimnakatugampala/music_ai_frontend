@@ -65,65 +65,6 @@ const GenerateMusicInput = () => {
       setgeneratedImages(musicImageResult); // Set generated images
       console.log("Generated music images:", musicImageResult);
   
-    //   // Create audioStreamUrls from the audio URLs
-    //      // Sequentially fetch and convert audio URLs to blob URLs
-    // const fetchAudioSequentially = async (urls) => {
-    //   const audioBlobUrls = [];
-
-    //   for (const url of urls) {
-    //     try {
-    //       console.log(`Fetching audio from URL: ${url}`);
-    //       const audioBlob = await AudioStreamingAPI(url);
-    //       const audioStreamUrl = URL.createObjectURL(audioBlob);
-    //       audioBlobUrls.push(audioStreamUrl);
-    //       console.log(`Successfully fetched and created URL for: ${url}`);
-    //     } catch (error) {
-    //       console.error(`Failed to fetch audio from URL: ${url}`, error);
-    //       // Optionally handle or log the error as needed
-    //     }
-    //   }
-
-    //   return audioBlobUrls;
-    // };
-
-    // // Fetch audio blobs and get URLs
-    // const audioStreamUrls = await fetchAudioSequentially(audioUrls);
-
-    // console.log("Audio stream URLs:", audioStreamUrls);
-    // setaudioBlobsUrls(audioStreamUrls);
-
-
-    // const fetchAudioStream = async (clip_id) => {
-    //   const streamingUrl = `https://audiopipe.suno.ai/?item_id=${clip_id}`;
-      
-    //   try {
-    //     const response = await fetch(streamingUrl);
-    //     if (!response.ok) {
-    //       throw new Error(`Failed to fetch audio: ${response.status}`);
-    //     }
-    
-    //     // Create a ReadableStream from the response body
-    //     const reader = response.body.getReader();
-    //     const chunks = [];
-    
-    //     // Read the stream chunk by chunk
-    //     while (true) {
-    //       const { done, value } = await reader.read();
-    //       if (done) break; // Stream is finished
-    //       chunks.push(value); // Store the chunk
-    //     }
-    
-    //     // Create a new Blob from the chunks
-    //     const audioBlob = new Blob(chunks, { type: 'audio/mpeg' });
-    //     const audioBlobUrl = URL.createObjectURL(audioBlob); // Create a URL for the blob
-    
-    //     return audioBlobUrl; // Return the blob URL
-    //   } catch (error) {
-    //     console.error(`Error fetching audio for clip ID ${clip_id}:`, error);
-    //     throw error; // Handle error as needed
-    //   }
-    // };
-    
     // Usage in your song items mapping
     const newSong = {
       id: Date.now(),
@@ -192,28 +133,6 @@ const GenerateMusicInput = () => {
     }
 
 
-
-    // Save Song Item
-  
-      // // Create a new song object to be added to Redux
-      // const newSong = {
-      //   id: Date.now(), // Temporary unique ID, you can update this based on actual response
-      //   title: "Generated Song", // Add any title logic if needed
-      //   created_date: new Date().toISOString(), // Set creation date
-      //   song_items: audioStreamUrls.map((streamUrl, index) => ({
-      //     id: index + 1,
-      //     cover_img: musicImageResult[0]?.url, // Set image from generated result
-      //     visual_desc: "A description of the song's visual elements.",
-      //     variation: textVariationResult[index]?.variation || "Original", // Set variation from generated result
-      //     audio_stream_url: streamUrl, // Set the audio stream URL (blob URL)
-      //     audio_download_url: streamUrl, // Same blob URL for download
-      //     generated_song_id: index + 1,
-      //     clip_id: 123 + index, // Example clip ID, adjust if needed
-      //   })),
-      // };
-  
-      // // Dispatch the addSong action to add the new song to the Redux store
-      // dispatch(addSong(newSong));
   
     } catch (error) {
       console.error("Error in handleSubmitSongDescription:", error);
@@ -221,33 +140,7 @@ const GenerateMusicInput = () => {
     }
   };
 
-  useEffect(() => {
 
-    // Temperory Data
-      //  const newSong = {
-      //   id: Date.now(), // Temporary unique ID, you can update this based on actual response
-      //   title: textVariations.result.data.json.outputs[0]?.title, // Add any title logic if needed
-      //   created_date: new Date().toISOString(), // Set creation date
-      //   song_items: audioBlobsUrls.map((streamUrl, index) => ({
-      //     id: index + 1,
-      //     cover_img: generatedImages.file_paths[index], // Set image from generated result
-      //     visual_desc: textVariations.result.data.json.outputs[index]?.visual || "A description of the song's visual elements.",
-      //     variation: textVariations.result.data.json.outputs[index]?.variation || "Original", // Set variation from generated result
-      //     audio_stream_url: streamUrl, // Set the audio stream URL (blob URL)
-      //     audio_download_url: streamUrl, // Same blob URL for download
-      //     generated_song_id: index + 1,
-      //     clip_id: streamUrl.match(/\/([a-z0-9-]+)\.mp3$/i)[1], // Example clip ID, adjust if needed
-      //   })),
-      // };
-
-
-      // Download the audio from the cdn link API
-
-      // Save to the DB
-
-      // console.log(newSong)
-  
-  }, []);
   
 
 
