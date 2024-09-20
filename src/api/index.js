@@ -253,7 +253,7 @@ export const GenerateMusicBySongDesc = async (songDesc) => {
     const response = await fetch(`${BACKEND_LINK}/generate/description-mode`, requestOptions);
     const result = await response.json();
 
-    console.log()
+    console.log(result.token)
 
     // Save the Token
     Cookies.set('MUSIC_AI_TOKEN', result.token)
@@ -270,10 +270,16 @@ export const GenerateMusicBySongDesc = async (songDesc) => {
 };
 
 
-export const AudioStreamingAPI = async (audioLink) => {
+export const AudioStreamingAPI = async (url) => {
+
+  const token = Cookies.get('MUSIC_AI_TOKEN'); // Get the token from the cookie
+
+  if (!token) {
+    throw new Error('Token is missing. Please generate music to obtain the token.');
+  }
 
   const myHeaders = new Headers();
-  myHeaders.append("Authorization",`Bearer ${MUSIC_AI_TOKEN}`);
+  myHeaders.append("Authorization",`Bearer ${token}`);
   myHeaders.append("Referer", "https://suno.com");
   myHeaders.append("Origin", "https://suno.com");
 
@@ -285,7 +291,7 @@ export const AudioStreamingAPI = async (audioLink) => {
   };
 
   try {
-    const response = await fetch("https://cdn1.suno.ai/a5ef2e79-498c-43ef-90d2-bbad88b2c25f.mp3", requestOptions);
+    const response = await fetch(`${url}`, requestOptions);
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
@@ -297,6 +303,33 @@ export const AudioStreamingAPI = async (audioLink) => {
   }
 };
 
+
+export const AudioStreamingAPIFromLocal = async (url) => {
+  const requestOptions = {
+    method: "GET",
+    redirect: "follow",
+  };
+
+  try {
+    const response = await fetch(`${BACKEND_LINK}/proxy/audio?url=${url}&token=${MUSIC_AI_TOKEN}`, requestOptions);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    // Convert the response to a blob (since it's an audio file)
+    const audioBlob = await response.blob();
+
+    // Create a URL for the blob so it can be used in an audio player or downloaded
+    const audioStreamUrl = URL.createObjectURL(audioBlob);
+
+    // Return the audio stream URL
+    return audioStreamUrl;
+  } catch (error) {
+    console.error("Error fetching audio from local server:", error);
+    throw error;
+  }
+};
 
 
 // api/index.js
