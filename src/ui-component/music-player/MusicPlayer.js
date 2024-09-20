@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Box, IconButton, makeStyles } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
-import 'react-h5-audio-player/lib/styles.css';
+import AudioPlayer from 'react-h5-audio-player'; // Import react-h5-audio-player
+import 'react-h5-audio-player/lib/styles.css'; // Import player styles
 import { useSelector, useDispatch } from 'react-redux';
 import { BACKEND_HOST } from '../../api';
 import { hideMusicPlayer } from '../../store/actions';
@@ -38,7 +39,7 @@ const MusicPlayer = () => {
   const classes = useStyles();
   const { isVisible, currentSong } = useSelector((state) => state.musicPlayer);
   const dispatch = useDispatch();
-  const audioRef = useRef(null); // Reference to the audio element
+  const audioRef = useRef(null); // Reference to the audio element inside react-h5-audio-player
   const mediaSourceRef = useRef(null); // Reference to MediaSource
   const [sourceBuffer, setSourceBuffer] = useState(null); // State to hold source buffer
 
@@ -52,7 +53,7 @@ const MusicPlayer = () => {
       mediaSourceRef.current = mediaSource;
 
       mediaSource.addEventListener('sourceopen', async () => {
-        const audio = audioRef.current;
+        const audio = audioRef.current.audio.current; // Access the native audio element inside react-h5-audio-player
         const sourceBuffer = mediaSource.addSourceBuffer('audio/mpeg');
         setSourceBuffer(sourceBuffer);
 
@@ -100,8 +101,9 @@ const MusicPlayer = () => {
 
       // Bind the media source object to the audio element
       if (audioRef.current) {
-        audioRef.current.src = URL.createObjectURL(mediaSource);
-        audioRef.current.play();
+        const audio = audioRef.current.audio.current; // Access native audio element
+        audio.src = URL.createObjectURL(mediaSource);
+        audio.play();
       }
     } catch (error) {
       console.error("Error streaming audio:", error);
@@ -115,8 +117,9 @@ const MusicPlayer = () => {
       fetchAndStreamAudio(audio_stream_url);
     } else if (audioRef.current) {
       // For direct URLs, just set the src of the audio element
-      audioRef.current.src = audio_stream_url;
-      audioRef.current.play();
+      const audio = audioRef.current.audio.current; // Access the native audio element
+      audio.src = audio_stream_url;
+      audio.play();
     }
   }, [currentSong]);
 
@@ -147,14 +150,17 @@ const MusicPlayer = () => {
 
         <div className='col-md-8'>
           {isVisible && (
-            <audio ref={audioRef} controls autoPlay>
-              Your browser does not support the audio element.
-            </audio>
+            <AudioPlayer
+              autoPlay
+              ref={audioRef} // Set ref to access audio element inside the player
+              onPlay={() => console.log("onPlay")}
+              customAdditionalControls={[]} // Optionally customize the controls
+            />
           )}
         </div>
       </Box>
     </div>
   );
-}
+};
 
 export default MusicPlayer;
