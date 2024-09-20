@@ -93,71 +93,59 @@ const GenerateMusicInput = () => {
     // setaudioBlobsUrls(audioStreamUrls);
 
 
-const fetchAudioStream = async (clip_id) => {
-  const streamingUrl = `https://audiopipe.suno.ai/?item_id=${clip_id}`;
-
-  const audioElement = new Audio(); // Create an audio element
-  audioElement.src = streamingUrl; // Set the source to the streaming URL
-
-  try {
-    const response = await fetch(streamingUrl);
-    if (!response.ok) {
-      throw new Error(`Failed to fetch audio: ${response.status}`);
-    }
-
-    const reader = response.body.getReader();
-    const chunks = [];
+    // const fetchAudioStream = async (clip_id) => {
+    //   const streamingUrl = `https://audiopipe.suno.ai/?item_id=${clip_id}`;
+      
+    //   try {
+    //     const response = await fetch(streamingUrl);
+    //     if (!response.ok) {
+    //       throw new Error(`Failed to fetch audio: ${response.status}`);
+    //     }
     
-    // Start playing immediately
-    audioElement.play();
-
-    // Read the stream chunk by chunk
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break; // Stream is finished
-      chunks.push(value); // Store the chunk
-      
-      // Optionally, append each chunk to the audio source
-      // This depends on how your backend handles chunked audio
-    }
-
-    // Create a new Blob from the chunks once complete
-    const audioBlob = new Blob(chunks, { type: 'audio/mpeg' });
-    const audioBlobUrl = URL.createObjectURL(audioBlob); // Create a URL for the blob
-
-    return audioBlobUrl; // Return the blob URL
-  } catch (error) {
-    console.error(`Error fetching audio for clip ID ${clip_id}:`, error);
-    throw error; // Handle error as needed
-  }
-};
-
-  // Usage in your song items mapping
-  const newSong = {
-    id: Date.now(),
-    title: textVariationResult.result.data.json.outputs[0]?.title,
-    created_date: new Date().toISOString(),
-    song_items: await Promise.all(audioUrls.map(async (streamUrl, index) => {
-      const clip_id = streamUrl.split('/').pop().replace('.mp3', '');
-      
-      const audioBlobUrl = await fetchAudioStream(clip_id); // Fetch the audio stream and get the blob URL
-
-      return {
-        id: index + 1,
-        cover_img: musicImageResult.file_paths[index],
-        visual_desc: textVariationResult.result.data.json.outputs[index]?.visual || "A description of the song's visual elements.",
-        variation: textVariationResult.result.data.json.outputs[index]?.variation || "Original",
-        audio_stream_url: audioBlobUrl, // Use the blob URL for playback
-        audio_download_url: audioBlobUrl, // Same for download
-        generated_song_id: index + 1,
-        clip_id: clip_id,
-        blob_url: audioBlobUrl, // For reference
-      };
-    })),
-  };
-
-  console.log(newSong);
-
+    //     // Create a ReadableStream from the response body
+    //     const reader = response.body.getReader();
+    //     const chunks = [];
+    
+    //     // Read the stream chunk by chunk
+    //     while (true) {
+    //       const { done, value } = await reader.read();
+    //       if (done) break; // Stream is finished
+    //       chunks.push(value); // Store the chunk
+    //     }
+    
+    //     // Create a new Blob from the chunks
+    //     const audioBlob = new Blob(chunks, { type: 'audio/mpeg' });
+    //     const audioBlobUrl = URL.createObjectURL(audioBlob); // Create a URL for the blob
+    
+    //     return audioBlobUrl; // Return the blob URL
+    //   } catch (error) {
+    //     console.error(`Error fetching audio for clip ID ${clip_id}:`, error);
+    //     throw error; // Handle error as needed
+    //   }
+    // };
+    
+    // Usage in your song items mapping
+    const newSong = {
+      id: Date.now(),
+      title: textVariationResult.result.data.json.outputs[0]?.title,
+      created_date: new Date().toISOString(),
+      song_items: audioUrls.map((streamUrl, index) => {
+        const clip_id = streamUrl.split('/').pop().replace('.mp3', '');
+    
+        return {
+          id: index + 1,
+          cover_img: musicImageResult.file_paths[index],
+          visual_desc: textVariationResult.result.data.json.outputs[index]?.visual || "A description of the song's visual elements.",
+          variation: textVariationResult.result.data.json.outputs[index]?.variation || "Original",
+          audio_stream_url: `https://audiopipe.suno.ai/?item_id=${clip_id}`, // Use the blob URL for playback
+          audio_download_url: `https://audiopipe.suno.ai/?item_id=${clip_id}`, // Same for download
+          generated_song_id: index + 1,
+          clip_id: clip_id
+        };
+      }),
+    };
+    
+    console.log(newSong);
 
     dispatch(addSong(newSong));
 
