@@ -202,7 +202,7 @@ const GenerateMusicInput = () => {
 
       // Call APIs concurrently
       const [audioUrls, musicImageResult] = await Promise.all([
-        GenerateSongByCustomLyrics(lyrics, musicStyle),
+        GenerateSongByCustomLyrics(lyrics, musicStyle, textVariationResult.result.data.json.outputs[0]?.title),
         GenerateMusicImage({ "visuals": visuals }),
       ]);
   

@@ -422,14 +422,14 @@ export const DownloadAudioAPI = async (clip_id) => {
 }
 
 
-export const GenerateSongByCustomLyrics = async (lyrics, musicStyle) => {
+export const GenerateSongByCustomLyrics = async (lyrics, musicStyle, title) => {
   const myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
 
   const raw = JSON.stringify({
     "prompt": lyrics,  // Pass the processed lyrics as prompt
     "mv": "chirp-v3-0",
-    "title": "Custom Song",
+    "title": title == null ? "" : title,
     "tags": musicStyle // Pass the music style
   });
 
