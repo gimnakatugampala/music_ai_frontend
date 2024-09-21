@@ -120,7 +120,9 @@ const GenerateMusicInput = () => {
           audio_stream_url: audioUrls[index],
           audio_download_url: audioUrls[index],
           generated_song_id: Number.parseInt(songId),
-          clip_id: audioUrls[index].split('/').pop().replace('.mp3', '') // Ensure this matches your clip_id extraction logic
+          clip_id: audioUrls[index].split('/').pop().replace('.mp3', ''), // Ensure this matches your clip_id extraction logic
+          genre: null,        // Optional
+          lyrics: null  // Optional
         };
 
         try {
