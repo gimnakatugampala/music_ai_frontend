@@ -33,6 +33,13 @@ const GenerateMusicInput = () => {
   const { loadingSongGeneration  } = useSelector((state) => state.music || {});
 
 
+  // ------------ CUSTOM LYRICS --------
+  const [customLyrics, setcustomLyrics] = useState("")
+  const [musicStyle, setmusicStyle] = useState("")
+  const [title, settitle] = useState("")
+
+
+
 
   const handleChange = (event) => {
     setSwitchSingType(event.target.checked);
@@ -164,16 +171,56 @@ const GenerateMusicInput = () => {
               rows={10}
               placeholder="Enter a Lyrics on your mind..."
               variant="outlined"
-              value={lyrics}
-              onChange={(e) => setLyrics(e.target.value)}
+              value={customLyrics}
+              onChange={(e) => setcustomLyrics(e.target.value)}
               inputProps={{ maxLength: 1250 }}
             />
 
             <Box display="flex" justifyContent="flex-end" m={1} p={1}>
               <Typography variant="caption" display="block" gutterBottom>
-                {lyrics.length} / 1250
+                {customLyrics.length} / 1250
               </Typography>
             </Box>
+
+            <TextField
+              id="outlined-multiline-static"
+              fullWidth
+              label="Style of music (Optional)"
+              multiline
+              rows={3}
+              placeholder="Enter a Styles of music you want .."
+              variant="outlined"
+              value={musicStyle}
+              onChange={(e) => setmusicStyle(e.target.value)}
+              inputProps={{ maxLength: 120 }}
+            />
+
+            <Box display="flex" justifyContent="flex-end" m={1} p={1}>
+              <Typography variant="caption" display="block" gutterBottom>
+                {musicStyle.length} / 120
+              </Typography>
+            </Box>
+
+
+            <TextField
+              id="outlined-multiline-static"
+              fullWidth
+              label="Title for the Song (Optional)"
+              multiline
+              rows={1}
+              placeholder="Enter a Styles of music you want .."
+              variant="outlined"
+              value={title}
+              onChange={(e) => settitle(e.target.value)}
+              inputProps={{ maxLength: 80 }}
+            />
+
+            <Box display="flex" justifyContent="flex-end" m={1} p={1}>
+              <Typography variant="caption" display="block" gutterBottom>
+                {title.length} / 80
+              </Typography>
+            </Box>
+
 
             <Box my={2}>
               <Button
