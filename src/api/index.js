@@ -542,6 +542,8 @@ export const AddSongCustomLyricsAPI = async (song,lyrics) => {
     throw error;
   }
 };
+
+
 export const shortenLyrics = (lyrics) => {
   // Split lyrics into an array of words
   const words = lyrics.split(' ');
@@ -563,3 +565,27 @@ export const containsEnglish = (lyrics) => {
   // Test the lyrics to see if it contains any English characters
   return englishRegex.test(lyrics);
 };
+
+
+export const GetGenreByLyrics = async (lyrics) => {
+
+  const myHeaders = new Headers();
+myHeaders.append("Content-Type", "application/json");
+
+const raw = JSON.stringify({
+  "prompt": `${lyrics}`
+});
+
+const requestOptions = {
+  method: "POST",
+  headers: myHeaders,
+  body: raw,
+  redirect: "follow"
+};
+
+fetch(`${BACKEND_LINK}/generate/genre/`, requestOptions)
+  .then((response) => response.json())
+  .then((result) => console.log(result))
+  .catch((error) => console.error(error));
+
+}

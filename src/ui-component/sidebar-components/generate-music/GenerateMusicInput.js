@@ -8,7 +8,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import MusicNoteIcon from '@material-ui/icons/MusicNote';
 import Switch from '@material-ui/core/Switch';
 import ErrorAlert from '../../../functions/ErrorAlert';
-import { GenerateMusicBySongDesc, AudioStreamingAPI, GenerateTextVariations, GenerateMusicImage, AddSongDescAPI, AddSongDescItemAPI, GenerateSongByCustomLyrics, GenerateChatGPTLyricsForCustomLyrics, GenerateTextVariationsForCustomLyrics, AddSongCustomLyricsAPI, shortenLyrics, containsEnglish } from '../../../api';
+import { GenerateMusicBySongDesc, AudioStreamingAPI, GenerateTextVariations, GenerateMusicImage, AddSongDescAPI, AddSongDescItemAPI, GenerateSongByCustomLyrics, GenerateChatGPTLyricsForCustomLyrics, GenerateTextVariationsForCustomLyrics, AddSongCustomLyricsAPI, shortenLyrics, containsEnglish, GetGenreByLyrics } from '../../../api';
 
 import { useDispatch , useSelector} from 'react-redux';
 import { addSong  , setLoadingSongGeneration } from '../../../store/musicActions'; // Import the action to add a song
@@ -302,7 +302,7 @@ const GenerateMusicInput = () => {
 
   return (
     <div>
-      <Box mt={2}>
+      <Box>
         <Box display="flex" justifyContent="flex-end" m={1} p={1}>
           <FormControlLabel
             control={<Switch checked={switchSingType} onChange={handleChange} />}
@@ -321,7 +321,10 @@ const GenerateMusicInput = () => {
               placeholder="Enter a Lyrics on your mind..."
               variant="outlined"
               value={customLyrics}
-              onChange={(e) => setcustomLyrics(e.target.value)}
+              onChange={(e) => {
+                setcustomLyrics(e.target.value)
+                GetGenreByLyrics(e.target.value)
+              }}
               inputProps={{ maxLength: 1250 }}
             />
 
