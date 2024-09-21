@@ -156,6 +156,10 @@ const GenerateMusicInput = () => {
       ErrorAlert("Please enter your lyrics");
       return;
     }
+
+    let lyrics = customLyrics.replace(/\s+/g, ' ').trim()
+
+    console.log(lyrics)
     console.log(musicStyle)
     console.log(title)
   }
