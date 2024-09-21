@@ -420,3 +420,61 @@ export const DownloadAudioAPI = async (clip_id) => {
     return null;
   }
 }
+
+
+export const GenerateSongByCustomLyrics = async (lyrics, musicStyle) => {
+  const myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+
+  const raw = JSON.stringify({
+    "prompt": lyrics,  // Pass the processed lyrics as prompt
+    "mv": "chirp-v3-0",
+    "title": "Custom Song",
+    "tags": musicStyle // Pass the music style
+  });
+
+  const requestOptions = {
+    method: "POST",
+    headers: myHeaders,
+    body: raw,
+    redirect: "follow"
+  };
+
+  try {
+    const response = await fetch(`${BACKEND_LINK}/generate/`, requestOptions);
+    const result = await response.json();
+
+    // Extract clip IDs and construct audio URLs
+    const audioUrls = result.response.clips.map(clip => `https://cdn1.suno.ai/${clip.id}.mp3`);
+
+    return audioUrls; // Return array of audio URLs
+  } catch (error) {
+    console.error("Error generating song:", error);
+    throw error; // Throw error to handle in the calling function
+  }
+};
+
+
+// Generate ChatGPT Lyrics for Custom Lyrics
+export const GenerateChatGPTLyricsForCustomLyrics = async (lyrics) => {
+  const myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+
+  const raw = JSON.stringify({
+    "json": {
+      "soundPrompt": "",
+      "lyricsInput": `${lyrics}`
+    }
+  });
+
+  const requestOptions = {
+    method: "POST",
+    headers: myHeaders,
+    body: raw,
+    redirect: "follow"
+  };
+
+  return fetch("https://app.riffusion.com/api/trpc/openai.getGPTLyrics", requestOptions)
+    .then((response) => response.json()) // Return response as JSON
+    .catch((error) => console.error(error));
+};
