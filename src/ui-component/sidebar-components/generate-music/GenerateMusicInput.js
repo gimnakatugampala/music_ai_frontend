@@ -148,7 +148,17 @@ const GenerateMusicInput = () => {
   };
 
 
-  
+  // Generate Song by Custom Lyrics
+  const handleSubmitSongByCustomLyrics = async() => {
+    console.log(customLyrics)
+
+    if(customLyrics == ""){
+      ErrorAlert("Please enter your lyrics");
+      return;
+    }
+    console.log(musicStyle)
+    console.log(title)
+  }
 
 
   return (
@@ -208,7 +218,7 @@ const GenerateMusicInput = () => {
               label="Title for the Song (Optional)"
               multiline
               rows={1}
-              placeholder="Enter a Styles of music you want .."
+              placeholder="Enter a Title for your song .."
               variant="outlined"
               value={title}
               onChange={(e) => settitle(e.target.value)}
@@ -224,6 +234,7 @@ const GenerateMusicInput = () => {
 
             <Box my={2}>
               <Button
+                onClick={handleSubmitSongByCustomLyrics}
                 disableElevation
                 fullWidth
                 size="large"
