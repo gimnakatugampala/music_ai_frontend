@@ -8,7 +8,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import MusicNoteIcon from '@material-ui/icons/MusicNote';
 import Switch from '@material-ui/core/Switch';
 import ErrorAlert from '../../../functions/ErrorAlert';
-import { GenerateMusicBySongDesc, AudioStreamingAPI, GenerateTextVariations, GenerateMusicImage, AddSongDescAPI, AddSongDescItemAPI, GenerateSongByCustomLyrics, GenerateChatGPTLyricsForCustomLyrics } from '../../../api';
+import { GenerateMusicBySongDesc, AudioStreamingAPI, GenerateTextVariations, GenerateMusicImage, AddSongDescAPI, AddSongDescItemAPI, GenerateSongByCustomLyrics, GenerateChatGPTLyricsForCustomLyrics, GenerateTextVariationsForCustomLyrics, AddSongCustomLyricsAPI } from '../../../api';
 
 import { useDispatch , useSelector} from 'react-redux';
 import { addSong  , setLoadingSongGeneration } from '../../../store/musicActions'; // Import the action to add a song
@@ -167,16 +167,24 @@ const GenerateMusicInput = () => {
     try {
 
         // Step 1: Generate ChatGPT Lyrics for Custom Lyrics
-        const processedLyrics = await GenerateChatGPTLyricsForCustomLyrics(lyrics);
-        const updatedLyrics = processedLyrics.result.data.json.lyricsOutput; // Extract lyricsOutput from the API response
+        // const processedLyrics = await GenerateChatGPTLyricsForCustomLyrics(lyrics);
+        // const updatedLyrics = processedLyrics.result.data.json.lyricsOutput; // Extract lyricsOutput from the API response
 
-        console.log("Updated Lyrics from ChatGPT API:", updatedLyrics);
+        // console.log("Updated Lyrics from ChatGPT API:", updatedLyrics);
+
+            // Generate text variations based on updated lyrics
+    const textVariationResult = await GenerateTextVariationsForCustomLyrics(lyrics);
+
+    // Extract visuals for music image generation
+    const visuals = [
+        textVariationResult.result.data.json.outputs[0]?.visual,
+        textVariationResult.result.data.json.outputs[1]?.visual
+    ];
 
       // Call APIs concurrently
-      const [audioUrls, textVariationResult, musicImageResult] = await Promise.all([
+      const [audioUrls, musicImageResult] = await Promise.all([
         GenerateSongByCustomLyrics(lyrics, musicStyle),
-        GenerateTextVariations(updatedLyrics),
-        GenerateMusicImage({ "visuals": [updatedLyrics, updatedLyrics] }),
+        GenerateMusicImage({ "visuals": visuals }),
       ]);
   
        // After all APIs have resolved, handle the results
@@ -218,7 +226,7 @@ const GenerateMusicInput = () => {
 
     // ------------- Save Song ---------------
 
-    const addSongResponse = await AddSongDescAPI(newSong, songDesc);
+    const addSongResponse = await AddSongCustomLyricsAPI(newSong, lyrics);
 
     if (addSongResponse.responseCode === "200") {
       const songId = addSongResponse.responseData.id;

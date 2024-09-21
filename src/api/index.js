@@ -445,7 +445,7 @@ export const GenerateSongByCustomLyrics = async (lyrics, musicStyle) => {
     const result = await response.json();
 
     // Extract clip IDs and construct audio URLs
-    const audioUrls = result.response.clips.map(clip => `https://cdn1.suno.ai/${clip.id}.mp3`);
+    const audioUrls = result.clips.map(clip => `https://cdn1.suno.ai/${clip.id}.mp3`);
 
     return audioUrls; // Return array of audio URLs
   } catch (error) {
@@ -461,9 +461,36 @@ export const GenerateChatGPTLyricsForCustomLyrics = async (lyrics) => {
   myHeaders.append("Content-Type", "application/json");
 
   const raw = JSON.stringify({
-    "json": {
       "soundPrompt": "",
       "lyricsInput": `${lyrics}`
+    }
+  );
+
+  const requestOptions = {
+    method: "POST",
+    headers: myHeaders,
+    body: raw,
+    redirect: "follow"
+  };
+
+  return fetch(`${BACKEND_LINK}/generate-chatgpt-lyrics`, requestOptions)
+    .then((response) => response.json()) // Return response as JSON
+    .catch((error) => console.error(error));
+};
+
+
+export const GenerateTextVariationsForCustomLyrics = async (lyrics) => {
+  const myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+
+  const raw = JSON.stringify({
+    "json": {
+      "text": "",
+      "user_id": "509c8c77-ce2e-4822-b29a-d3aae768b3ba",
+      "is_augment_prompt": true,
+      "lyrics": lyrics,
+      "is_public": true,
+      "curate_variations": false
     }
   });
 
@@ -474,7 +501,44 @@ export const GenerateChatGPTLyricsForCustomLyrics = async (lyrics) => {
     redirect: "follow"
   };
 
-  return fetch("https://app.riffusion.com/api/trpc/openai.getGPTLyrics", requestOptions)
-    .then((response) => response.json()) // Return response as JSON
-    .catch((error) => console.error(error));
+  try {
+    const response = await fetch(`${BACKEND_LINK}/generate-text-variations/`, requestOptions);
+    const result = await response.json();
+    console.log(result);
+    return result;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+
+export const AddSongCustomLyricsAPI = async (song,lyrics) => {
+  const myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+
+  const raw = JSON.stringify({
+    title: song.title,
+    user_song_description: null, // Assuming description is based on the first item
+    custom_lyrics: lyrics, // Adjust if you want to handle lyrics
+    created_date: song.created_date,
+    song_type_id: 2, // Adjust based on your logic
+    user_id: CURRENT_USER.user_id
+  });
+
+  const requestOptions = {
+    method: "POST",
+    headers: myHeaders,
+    body: raw,
+    redirect: "follow"
+  };
+
+  try {
+    const response = await fetch(`${BACKEND_LINK}/add-songs/`, requestOptions);
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.error("Error adding song:", error);
+    throw error;
+  }
 };
