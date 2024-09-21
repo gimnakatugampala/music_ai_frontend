@@ -81,9 +81,9 @@ const Dashboard = () => {
                             <i>Generated: {CalculateDateTime(m.created_date)}</i>
                         </Typography>
                     </Box>
-                    <Grid container spacing={gridSpacing}>
+                    <Grid  container spacing={gridSpacing}>
                         {m.song_items.map((songItem,index) => (
-                            <Grid key={songItem.id} item lg={4} md={4} sm={4} xs={12}>
+                            <Grid  key={songItem.id}  item lg={4} md={4} sm={4} xs={12}>
                                 <MusicItemCard item={{ songItem, title: m.title, created_date: m.created_date }} /> {/* Passing each song item */}
                             </Grid>
                         ))}
