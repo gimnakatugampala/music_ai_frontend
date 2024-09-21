@@ -323,7 +323,7 @@ const GenerateMusicInput = () => {
               value={customLyrics}
               onChange={(e) => {
                 setcustomLyrics(e.target.value)
-                GetGenreByLyrics(e.target.value)
+                GetGenreByLyrics((e.target.value).replace(/\s+/g, ' ').trim(), setmusicStyle); // Pass setmusicStyle
               }}
               inputProps={{ maxLength: 1250 }}
             />

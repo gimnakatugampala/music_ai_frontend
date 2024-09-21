@@ -567,25 +567,31 @@ export const containsEnglish = (lyrics) => {
 };
 
 
-export const GetGenreByLyrics = async (lyrics) => {
-
+export const GetGenreByLyrics = async (lyrics, setMusicStyle) => {
   const myHeaders = new Headers();
-myHeaders.append("Content-Type", "application/json");
+  myHeaders.append("Content-Type", "application/json");
 
-const raw = JSON.stringify({
-  "prompt": `${lyrics}`
-});
+  const raw = JSON.stringify({
+    "prompt": `${lyrics}`
+  });
 
-const requestOptions = {
-  method: "POST",
-  headers: myHeaders,
-  body: raw,
-  redirect: "follow"
+  const requestOptions = {
+    method: "POST",
+    headers: myHeaders,
+    body: raw,
+    redirect: "follow"
+  };
+
+  try {
+    const response = await fetch(`${BACKEND_LINK}/generate/genre/`, requestOptions);
+    const result = await response.json();
+    console.log(result);
+
+    // Set the genre to musicStyle
+    if (result.genre) {
+      setMusicStyle(result.genre);
+    }
+  } catch (error) {
+    console.error(error);
+  }
 };
-
-fetch(`${BACKEND_LINK}/generate/genre/`, requestOptions)
-  .then((response) => response.json())
-  .then((result) => console.log(result))
-  .catch((error) => console.error(error));
-
-}
