@@ -542,3 +542,24 @@ export const AddSongCustomLyricsAPI = async (song,lyrics) => {
     throw error;
   }
 };
+export const shortenLyrics = (lyrics) => {
+  // Split lyrics into an array of words
+  const words = lyrics.split(' ');
+
+  // Calculate half of the total length and truncate the lyrics
+  const halfLength = Math.floor(words.length / 2);
+
+  // Join the first half back into a string
+  const shortenedLyrics = words.slice(0, halfLength).join(' ');
+
+  return shortenedLyrics;
+};
+
+
+export const containsEnglish = (lyrics) => {
+  // Regular expression to match English alphabet characters (A-Z, a-z)
+  const englishRegex = /[A-Za-z]/;
+
+  // Test the lyrics to see if it contains any English characters
+  return englishRegex.test(lyrics);
+};

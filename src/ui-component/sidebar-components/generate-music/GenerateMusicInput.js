@@ -8,7 +8,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import MusicNoteIcon from '@material-ui/icons/MusicNote';
 import Switch from '@material-ui/core/Switch';
 import ErrorAlert from '../../../functions/ErrorAlert';
-import { GenerateMusicBySongDesc, AudioStreamingAPI, GenerateTextVariations, GenerateMusicImage, AddSongDescAPI, AddSongDescItemAPI, GenerateSongByCustomLyrics, GenerateChatGPTLyricsForCustomLyrics, GenerateTextVariationsForCustomLyrics, AddSongCustomLyricsAPI } from '../../../api';
+import { GenerateMusicBySongDesc, AudioStreamingAPI, GenerateTextVariations, GenerateMusicImage, AddSongDescAPI, AddSongDescItemAPI, GenerateSongByCustomLyrics, GenerateChatGPTLyricsForCustomLyrics, GenerateTextVariationsForCustomLyrics, AddSongCustomLyricsAPI, shortenLyrics, containsEnglish } from '../../../api';
 
 import { useDispatch , useSelector} from 'react-redux';
 import { addSong  , setLoadingSongGeneration } from '../../../store/musicActions'; // Import the action to add a song
@@ -168,14 +168,31 @@ const GenerateMusicInput = () => {
 
       dispatch(setLoadingSongGeneration(true)); // Start loading
 
+      let textVariationResult;
+
+
+      //  IF if it is english launch chatgpt lyrics ---------------
+      if(containsEnglish(lyrics)){
+
         // Step 1: Generate ChatGPT Lyrics for Custom Lyrics
-        // const processedLyrics = await GenerateChatGPTLyricsForCustomLyrics(lyrics);
-        // const updatedLyrics = processedLyrics.result.data.json.lyricsOutput; // Extract lyricsOutput from the API response
-
-        // console.log("Updated Lyrics from ChatGPT API:", updatedLyrics);
-
+        const processedLyrics = await GenerateChatGPTLyricsForCustomLyrics(lyrics);
+        const updatedLyrics = processedLyrics.result.data.json.lyricsOutput; // Extract lyricsOutput from the API response
+  
+        console.log("Updated Lyrics from ChatGPT API:", updatedLyrics);
+  
             // Generate text variations based on updated lyrics
-    const textVariationResult = await GenerateTextVariationsForCustomLyrics(lyrics);
+        // Step 2: Generate Text Variations for Custom Lyrics
+        textVariationResult = await GenerateTextVariationsForCustomLyrics(updatedLyrics);
+
+
+      }else{
+
+
+        textVariationResult = await GenerateTextVariationsForCustomLyrics(lyrics);
+      }
+
+
+
 
     // Extract visuals for music image generation
     const visuals = [
@@ -353,7 +370,20 @@ const GenerateMusicInput = () => {
               </Typography>
             </Box>
 
-
+            {loadingSongGeneration ? (
+            <Box my={2}>
+              <Button
+                disableElevation
+                fullWidth
+                size="large"
+                type="submit"
+                variant="contained"
+                className={classes.login}
+              >
+                Generating ..
+              </Button>
+            </Box>
+            ) : (
             <Box my={2}>
               <Button
                 onClick={handleSubmitSongByCustomLyrics}
@@ -367,6 +397,9 @@ const GenerateMusicInput = () => {
                 <MusicNoteIcon /> Generate music
               </Button>
             </Box>
+          )}
+
+
           </>
         ) : (
           <>
