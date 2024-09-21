@@ -166,6 +166,8 @@ const GenerateMusicInput = () => {
      
     try {
 
+      dispatch(setLoadingSongGeneration(true)); // Start loading
+
         // Step 1: Generate ChatGPT Lyrics for Custom Lyrics
         // const processedLyrics = await GenerateChatGPTLyricsForCustomLyrics(lyrics);
         // const updatedLyrics = processedLyrics.result.data.json.lyricsOutput; // Extract lyricsOutput from the API response
@@ -222,7 +224,7 @@ const GenerateMusicInput = () => {
 
     dispatch(addSong(newSong));
 
-    // dispatch(setLoadingSongGeneration(false)); 
+    dispatch(setLoadingSongGeneration(false)); 
 
     // ------------- Save Song ---------------
 
@@ -264,12 +266,14 @@ const GenerateMusicInput = () => {
       console.log("All song items added successfully.");
     } else {
       ErrorAlert("Failed to add song.");
+      dispatch(setLoadingSongGeneration(false)); // Start loading
     }
 
 
   
     } catch (error) {
       console.error("Error in handleSubmitSongDescription:", error);
+      dispatch(setLoadingSongGeneration(false)); // Start loading
       ErrorAlert("Error generating music.");
     }
 
