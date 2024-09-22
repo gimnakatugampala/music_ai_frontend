@@ -3,7 +3,7 @@ import TextField from '@material-ui/core/TextField';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import { useThemeStyles } from '../../../themes/colors';
-import { Typography } from '@material-ui/core';
+import { Typography, Chip } from '@material-ui/core';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import MusicNoteIcon from '@material-ui/icons/MusicNote';
 import Switch from '@material-ui/core/Switch';
@@ -12,6 +12,14 @@ import { GenerateMusicBySongDesc, AudioStreamingAPI, GenerateTextVariations, Gen
 
 import { useDispatch , useSelector} from 'react-redux';
 import { addSong  , setLoadingSongGeneration } from '../../../store/musicActions'; // Import the action to add a song
+
+
+const genres = [
+  "Pop", "Rock", "Hip-Hop", "Country", "Jazz", "Classical", "Blues", 
+  "Electronic", "Reggae", "Folk", "Latin", "Metal", "Punk", "Alternative", 
+  "Indie", "Funk", "Gospel", "Disco", "House", "Techno", "Trance", 
+  "Dubstep", "Afrobeat", "Dancehall", "K-Pop", "Trap"
+];
 
 
 const GenerateMusicInput = () => {
@@ -299,6 +307,10 @@ const GenerateMusicInput = () => {
     console.log(title)
   }
 
+  const handleGenreClick = (genre) => {
+    setmusicStyle(genre); // Set the clicked genre in the input field
+  };
+
 
   return (
     <div>
@@ -352,6 +364,18 @@ const GenerateMusicInput = () => {
                 {musicStyle.length} / 120
               </Typography>
             </Box>
+
+            <Box display="flex" overflow="auto" mb={2} p={1} style={{ whiteSpace: 'nowrap' }}>
+            {genres.map((genre) => (
+              <Chip
+                key={genre}
+                label={genre}
+                onClick={() => handleGenreClick(genre)}
+                style={{ marginRight: '8px', cursor: 'pointer' }}
+                color={musicStyle === genre ? "primary" : "default"}
+              />
+            ))}
+          </Box>
 
 
             <TextField
