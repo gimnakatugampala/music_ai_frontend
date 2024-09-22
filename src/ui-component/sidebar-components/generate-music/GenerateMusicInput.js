@@ -328,7 +328,7 @@ const GenerateMusicInput = () => {
               inputProps={{ maxLength: 1250 }}
             />
 
-            <Box display="flex" justifyContent="flex-end" m={1} p={1}>
+            <Box display="flex" justifyContent="flex-end" mb={1} p={1}>
               <Typography variant="caption" display="block" gutterBottom>
                 {customLyrics.length} / 1250
               </Typography>
@@ -339,7 +339,7 @@ const GenerateMusicInput = () => {
               fullWidth
               label="Style of music (Optional)"
               multiline
-              rows={3}
+              rows={2}
               placeholder="Enter a Styles of music you want .."
               variant="outlined"
               value={musicStyle}
@@ -347,7 +347,7 @@ const GenerateMusicInput = () => {
               inputProps={{ maxLength: 120 }}
             />
 
-            <Box display="flex" justifyContent="flex-end" m={1} p={1}>
+            <Box display="flex" justifyContent="flex-end" mb={1} p={1}>
               <Typography variant="caption" display="block" gutterBottom>
                 {musicStyle.length} / 120
               </Typography>
@@ -367,7 +367,7 @@ const GenerateMusicInput = () => {
               inputProps={{ maxLength: 80 }}
             />
 
-            <Box display="flex" justifyContent="flex-end" m={1} p={1}>
+            <Box display="flex" justifyContent="flex-end" mb={1} p={1}>
               <Typography variant="caption" display="block" gutterBottom>
                 {title.length} / 80
               </Typography>
