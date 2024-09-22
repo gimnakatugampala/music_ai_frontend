@@ -12,6 +12,9 @@ import LogoSection from '../LogoSection';
 import Customization from './Customization';
 import MobileSection from './MobileSection';
 import ProfileSection from './ProfileSection';
+import HomeIconImg from '../../../assets/images/icons/home.png'
+import SearchIconImg from '../../../assets/images/icons/magnifier.png'
+import ExploreIconImg from '../../../assets/images/icons/compass.png'
 
 const useStyles = makeStyles((theme) => ({
     grow: {
@@ -48,11 +51,16 @@ const useStyles = makeStyles((theme) => ({
         textDecoration: 'none',
     },
     iconButton: {
+        marginRight:'10px',
         color: theme.palette.text.primary,
         '&:hover': {
             color: theme.palette.primary.main,
         },
     },
+    iconImage: {
+        width: 40,  // Reduced size of the icon
+        height: 40, // Reduced size of the icon
+    }
 }));
 
 const Header = (props) => {
@@ -82,10 +90,7 @@ const Header = (props) => {
                     href="/dashboard"
                     className={classes.iconButton}
                 >
-                    <HomeIcon />
-                    <Typography variant="body1" className={classes.linkText}>
-                        Home
-                    </Typography>
+                    <img src={HomeIconImg} alt="Home" className={classes.iconImage} />
                 </IconButton>
 
                 {/* Explore Link */}
@@ -94,10 +99,7 @@ const Header = (props) => {
                     href="/explore"
                     className={classes.iconButton}
                 >
-                    <ExploreIcon />
-                    <Typography variant="body1" className={classes.linkText}>
-                        Explore
-                    </Typography>
+                    <img src={ExploreIconImg} alt="Explore" className={classes.iconImage} />
                 </IconButton>
 
                 {/* Search Link */}
@@ -106,14 +108,10 @@ const Header = (props) => {
                     href="/search"
                     className={classes.iconButton}
                 >
-                    <SearchIcon />
-                    <Typography variant="body1" className={classes.linkText}>
-                        Search
-                    </Typography>
+                    <img src={SearchIconImg} alt="Search" className={classes.iconImage} />
                 </IconButton>
             </div>
             <div className={classes.grow} />
-
             <Hidden smDown>
                 <Customization />
             </Hidden>
