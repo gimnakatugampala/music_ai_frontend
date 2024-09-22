@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Card, CardContent, Typography, CircularProgress, Box, Grid, IconButton, Slider } from '@material-ui/core';
-import PlayArrowIcon from '@material-ui/icons/PlayArrow';
-import PauseIcon from '@material-ui/icons/Pause';
+import { Card, CardContent, Typography, CircularProgress, Grid, Chip } from '@material-ui/core';
 import { BACKEND_HOST, GetSongByID } from '../../api'; // Ensure this path is correct
 import CalculateDateTime from '../../functions/CalculateDateTime';
 
@@ -80,19 +78,36 @@ const Index = () => {
         <Typography variant="h6" gutterBottom style={{ textAlign: 'left' }}>
           <i>Generated: {CalculateDateTime(songData.created_date)}</i>
         </Typography>
-        <Grid container spacing={4}>
+        <Grid container spacing={1}>
           {songData.song_items.map(item => (
             <Grid item xs={12} key={item.id}>
               <Grid container spacing={2}>
                 <Grid item xs={12} sm={6} style={{ display: 'flex', flexDirection: 'column' }}>
-                  <Typography variant="body2" gutterBottom>Description: {item.visual_desc}</Typography>
-                  <Typography variant="body2" gutterBottom>Genre: {item.genre || 'N/A'}</Typography>
+                  <div className='mt-3'>
+                    <h5><b>Description</b></h5>
+                    <h6>{item.visual_desc}</h6>
+                  </div>
+
+                  <div className='mt-3'>
+                    <h5><b>Genre</b></h5>
+                    <Chip label={item.genre || 'N/A'} color={item.genre ? 'default' : 'default'} />
+                  </div>
+
+                  <div className='my-3'>
+                  <h5><b>Lyrics</b></h5>
+                  {item.lyrics.split(/,\s*/).map((line, index) => (
+                    <span key={index}>
+                        {line}
+                        {index < item.lyrics.split(/,\s*/).length - 1 && <br />} {/* Add a line break except for the last item */}
+                    </span>
+                    ))}
+                  </div>
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={6} style={{ display: 'flex', justifyContent: 'flex-end' }}>
                   <img 
                     src={`${BACKEND_HOST}${item.cover_img}`} 
                     alt={item.visual_desc} 
-                    style={{ width: '100%', height: 'auto', borderRadius: '8px' }} 
+                    style={{ width: '400px', height: '400px', borderRadius: '8px' }} 
                   />
                 </Grid>
               </Grid>
