@@ -19,7 +19,7 @@ const Routes = () => {
             console.log("User data from cookie:", userData); // Check what user data is retrieved
             dispatch(setUser(userData));
         }
-    }, [dispatch]);
+    }, []);
 
     // Check if user state is still being determined
     if (user === undefined) {

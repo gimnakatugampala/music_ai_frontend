@@ -138,6 +138,7 @@ const ProfileSection = () => {
             ErrorToast("User logged logout")
 
             setTimeout(() => {
+                // window.location.reload()
                 window.location.href = "/login"
             }, 1500);
 
