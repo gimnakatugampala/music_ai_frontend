@@ -4,12 +4,14 @@ import { Card, CardContent, Typography, CircularProgress, Grid, Chip } from '@ma
 import { BACKEND_HOST, GetSongByID } from '../../api'; // Ensure this path is correct
 import CalculateDateTime from '../../functions/CalculateDateTime';
 
+import AudioPlayer from 'react-h5-audio-player'; // Import react-h5-audio-player
+import 'react-h5-audio-player/lib/styles.css'; // Import player styles
+
 const Index = () => {
   const location = useLocation();
   const [songData, setSongData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(1);
   const audioRef = React.useRef(null);
 
@@ -40,23 +42,6 @@ const Index = () => {
     fetchSongData();
   }, [code]);
 
-  const handlePlayAudio = () => {
-    if (isPlaying) {
-      audioRef.current.pause();
-    } else {
-      audioRef.current.volume = volume;
-      audioRef.current.play();
-    }
-    setIsPlaying(!isPlaying);
-  };
-
-  const handleVolumeChange = (event, newValue) => {
-    setVolume(newValue);
-    if (audioRef.current) {
-      audioRef.current.volume = newValue;
-    }
-  };
-
   if (loading) {
     return <CircularProgress />;
   }
@@ -80,38 +65,59 @@ const Index = () => {
         </Typography>
         <Grid container spacing={1}>
           {songData.song_items.map(item => (
-            <Grid item xs={12} key={item.id}>
-              <Grid container spacing={2}>
-                <Grid item xs={12} sm={6} style={{ display: 'flex', flexDirection: 'column' }}>
-                  <div className='mt-3'>
-                    <h5><b>Description</b></h5>
-                    <h6>{item.visual_desc}</h6>
-                  </div>
+            <React.Fragment key={item.id}>
 
-                  <div className='mt-3'>
-                    <h5><b>Genre</b></h5>
-                    <Chip label={item.genre || 'N/A'} color={item.genre ? 'default' : 'default'} />
-                  </div>
+              <Grid item xs={12}>
+                <Grid container spacing={2}>
+                  <Grid item xs={12} sm={6} style={{ display: 'flex', flexDirection: 'column' }}>
 
-                  <div className='my-3'>
-                  <h5><b>Lyrics</b></h5>
-                  {item.lyrics.split(/,\s*/).map((line, index) => (
-                    <span key={index}>
-                        {line}
-                        {index < item.lyrics.split(/,\s*/).length - 1 && <br />} {/* Add a line break except for the last item */}
-                    </span>
-                    ))}
-                  </div>
+                  <Grid className='my-2' container spacing={1}>
+                  <Grid item xs={12} sm={10}>
+                    <div className='mt-3'>
+                      <h5><b>Description</b></h5>
+                      <h6>{item.visual_desc}</h6>
+                    </div>
+                  </Grid>
+
+                  <Grid item xs={12} sm={2}>
+                    <div className='mt-3'>
+                      <h5><b>Genre</b></h5>
+                      <Chip label={item.genre || 'N/A'} color={item.genre ? 'default' : 'default'} />
+                    </div>
                 </Grid>
-                <Grid item xs={12} sm={6} style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                  <img 
-                    src={`${BACKEND_HOST}${item.cover_img}`} 
-                    alt={item.visual_desc} 
-                    style={{ width: '400px', height: '400px', borderRadius: '8px' }} 
-                  />
+                </Grid>
+
+
+                    <div className='my-3'>
+                      <h5><b>Lyrics</b></h5>
+                      {item.lyrics.split(/,\s*/).map((line, index) => (
+                        <span key={index}>
+                          {line}
+                          {index < item.lyrics.split(/,\s*/).length - 1 && <br />}
+                        </span>
+                      ))}
+                    </div>
+                  </Grid>
+                  <Grid item xs={12} sm={6} style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                    <img 
+                      src={`${BACKEND_HOST}${item.cover_img}`} 
+                      alt={item.visual_desc} 
+                      style={{ width: '400px', height: '400px', borderRadius: '8px' }} 
+                    />
+                  </Grid>
                 </Grid>
               </Grid>
-            </Grid>
+
+              <Grid item mx={"auto"} xs={8} my={4}>
+                <AudioPlayer
+                  autoPlay
+                  ref={audioRef} // Set ref to access audio element inside the player
+                  src={`${item.audio_stream_url}`} // Add the audio stream URL here
+                  onPlay={() => console.log("onPlay")}
+                  customAdditionalControls={[]} // Optionally customize the controls
+                />
+              </Grid>
+            </React.Fragment>
           ))}
         </Grid>
       </CardContent>
