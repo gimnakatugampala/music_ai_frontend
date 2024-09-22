@@ -1,23 +1,20 @@
 import React from 'react';
-import {Avatar, ButtonBase, Hidden, makeStyles} from '@material-ui/core';
+import { Avatar, ButtonBase, Hidden, makeStyles, IconButton, Typography } from '@material-ui/core';
 
-import {IconMenu2} from '@tabler/icons';
+// Icons
+import { IconMenu2 } from '@tabler/icons';
+import ExploreIcon from '@material-ui/icons/Explore';
+
+import SearchIcon from '@material-ui/icons/Search';
 
 import LogoSection from '../LogoSection';
-import SearchSection from './SearchSection';
-
 import Customization from './Customization';
-
 import MobileSection from './MobileSection';
-
 import ProfileSection from './ProfileSection';
-import NotificationSection from './NotificationSection';
-
-
 
 const useStyles = makeStyles((theme) => ({
     grow: {
-        flexGrow: 1
+        flexGrow: 1,
     },
     headerAvtar: {
         ...theme.typography.commonAvatar,
@@ -27,23 +24,39 @@ const useStyles = makeStyles((theme) => ({
         color: theme.palette.purple.dark,
         '&:hover': {
             background: theme.palette.purple.main,
-            color: theme.palette.purple.light
-        }
+            color: theme.palette.purple.light,
+        },
     },
     boxContainer: {
         width: '228px',
         display: 'flex',
         [theme.breakpoints.down('md')]: {
-            width: 'auto'
-        }
-    }
+            width: 'auto',
+        },
+    },
+    iconSection: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: theme.spacing(2),
+    },
+    linkText: {
+        marginLeft: theme.spacing(1),
+        fontWeight: 500,
+        color: theme.palette.text.primary,
+        textDecoration: 'none',
+    },
+    iconButton: {
+        color: theme.palette.text.primary,
+        '&:hover': {
+            color: theme.palette.primary.main,
+        },
+    },
 }));
 
 const Header = (props) => {
-    const {handleLeftDrawerToggle} = props;
+    const { handleLeftDrawerToggle } = props;
     const classes = useStyles();
-
-    
 
     return (
         <React.Fragment>
@@ -52,20 +65,47 @@ const Header = (props) => {
                     <LogoSection />
                     <div className={classes.grow} />
                 </Hidden>
-                <ButtonBase sx={{borderRadius: '12px'}}>
+                <ButtonBase sx={{ borderRadius: '12px' }}>
                     <Avatar variant="rounded" className={classes.headerAvtar} onClick={handleLeftDrawerToggle}>
                         <IconMenu2 stroke={1.5} size="1.3rem" />
                     </Avatar>
                 </ButtonBase>
             </div>
-            {/* <SearchSection theme="light" /> */}
+
+            {/* Middle Section: Explore & Search */}
             <div className={classes.grow} />
+            <div className={classes.iconSection}>
+                {/* Explore Link */}
+                <IconButton
+                    component="a"
+                    href="/explore"
+                    className={classes.iconButton}
+                >
+                    <ExploreIcon />
+                    <Typography variant="body1" className={classes.linkText}>
+                        Explore
+                    </Typography>
+                </IconButton>
+
+                {/* Search Link */}
+                <IconButton
+                    component="a"
+                    href="/search"
+                    className={classes.iconButton}
+                >
+                    <SearchIcon />
+                    <Typography variant="body1" className={classes.linkText}>
+                        Search
+                    </Typography>
+                </IconButton>
+            </div>
             <div className={classes.grow} />
+
             <Hidden smDown>
                 <Customization />
             </Hidden>
 
-            {/* <NotificationSection /> */}
+            {/* Profile Section */}
             <ProfileSection />
             <Hidden smUp>
                 <MobileSection />
