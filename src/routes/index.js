@@ -48,7 +48,7 @@ const Routes = () => {
                         <>
                         <Route path="/login" component={AuthenticationRoutes} />
                         <Route path="/register" component={AuthenticationRoutes} /> 
-                        {/* <Redirect to="/login" /> */}
+                        {/* <Redirect exact to="/login" /> */}
                         </>
                     )}
 

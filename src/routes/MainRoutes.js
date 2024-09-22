@@ -16,7 +16,7 @@ const MainRoutes = () => {
                 <Route path="/explore" component={ExplorePage} />
                 <Route path="/search" component={SearchPage} />
                 {/* Add a catch-all route if necessary */}
-                {/* <Redirect to="/dashboard" /> Fallback for unmatched routes */}
+                {/* <Redirect to="/login" />  */}
             </Switch>
         </MainLayout>
     );
