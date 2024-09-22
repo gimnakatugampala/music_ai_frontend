@@ -1,14 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { TextField, List, ListItem, ListItemText, ListItemAvatar, Avatar, IconButton, CircularProgress, Typography } from '@material-ui/core';
+import { TextField, List, ListItem, ListItemText, ListItemAvatar, Avatar, IconButton, CircularProgress, Typography, Dialog, DialogActions, DialogContent, DialogTitle, Button } from '@material-ui/core';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import PauseIcon from '@material-ui/icons/Pause';
-import DownloadIcon from '@material-ui/icons/GetApp'; // Import Download icon
-import ShareIcon from '@material-ui/icons/Share'; // Import Share icon
+import DownloadIcon from '@material-ui/icons/GetApp'; 
+import ShareIcon from '@material-ui/icons/Share';
+import FileCopyIcon from '@material-ui/icons/FileCopy'; // For copy icon
 import { makeStyles } from '@material-ui/core/styles';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { BACKEND_HOST, GetAllSongs } from '../../api';
 import { showMusicPlayer } from '../../store/actions';
+
+import XTwitterImg from '../../assets/images/icons/twitter.png'; // Twitter image
+import FacebookImg from '../../assets/images/icons/facebook.png'; // Facebook image
+import WhatsappImg from '../../assets/images/icons/whatsapp.png'; // Facebook image
+import MailImg from '../../assets/images/icons/mail.png'; // Facebook image
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -67,19 +73,29 @@ const useStyles = makeStyles((theme) => ({
   actionButton: {
     marginLeft: theme.spacing(1), // Space between icons
   },
+  dialogActions: {
+    justifyContent: 'center',
+  },
+  socialMediaIcon: {
+    width: 40, // You can adjust the size of the image here
+    height: 40,
+    marginRight: theme.spacing(1),
+  },
 }));
 
 const SearchPage = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const history = useHistory();
-  
+
   const [songs, setSongs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredSongs, setFilteredSongs] = useState([]);
   const [playingSongId, setPlayingSongId] = useState(null);
+  const [shareDialogOpen, setShareDialogOpen] = useState(false);
+  const [selectedSong, setSelectedSong] = useState(null);
 
   useEffect(() => {
     const fetchSongs = async () => {
@@ -98,7 +114,7 @@ const SearchPage = () => {
   }, []);
 
   useEffect(() => {
-    const flattenedSongs = songs.flatMap(song => 
+    const flattenedSongs = songs.flatMap(song =>
       song.song_items.map(item => ({
         ...item,
         title: song.title,
@@ -107,7 +123,7 @@ const SearchPage = () => {
     );
 
     setFilteredSongs(
-      flattenedSongs.filter(item => 
+      flattenedSongs.filter(item =>
         item.title.toLowerCase().includes(searchTerm.toLowerCase())
       )
     );
@@ -133,8 +149,40 @@ const SearchPage = () => {
   };
 
   const handleShare = (song) => {
-    // Implement share logic here
-    console.log(`Sharing: ${song.title}`);
+    setSelectedSong(song);
+    setShareDialogOpen(true);
+  };
+
+  const handleCloseShareDialog = () => {
+    setShareDialogOpen(false);
+  };
+
+  const copyLinkToClipboard = () => {
+    const songLink = `${window.location.origin}/songs?code=${selectedSong.id}`;
+    navigator.clipboard.writeText(songLink);
+  };
+
+  const handleShareToFacebook = () => {
+    const songLink = `${window.location.origin}/songs?code=${selectedSong.id}`;
+    window.open(`https://www.facebook.com/sharer/sharer.php?u=${songLink}`, '_blank');
+  };
+
+  const handleShareToTwitter = () => {
+    const songLink = `${window.location.origin}/songs?code=${selectedSong.id}`;
+    window.open(`https://twitter.com/intent/tweet?url=${songLink}`, '_blank');
+  };
+
+  const handleShareToWhatsapp = () => {
+    const songLink = `${window.location.origin}/songs?code=${selectedSong.id}`;
+    const whatsappMessage = `Check out this song: ${songLink}`;
+    window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(whatsappMessage)}`, '_blank');
+  };
+  
+  const handleShareToEmail = () => {
+    const songLink = `${window.location.origin}/songs?code=${selectedSong.id}`;
+    const subject = encodeURIComponent(`Check out this song: ${selectedSong.title}`);
+    const body = encodeURIComponent(`I found this song you might like: ${songLink}`);
+    window.open(`mailto:?subject=${subject}&body=${body}`, '_blank');
   };
 
   if (loading) {
@@ -215,6 +263,47 @@ const SearchPage = () => {
           </ListItem>
         ))}
       </List>
+      <Dialog
+        open={shareDialogOpen}
+        onClose={handleCloseShareDialog}
+        aria-labelledby="share-dialog-title"
+        maxWidth="md" // Set maxWidth to medium
+         // Make the dialog responsive
+      >
+        <DialogTitle id="share-dialog-title"><h4>{selectedSong ? selectedSong.title : 'Share Song'}</h4></DialogTitle>
+        <DialogContent>
+          <Typography>Copy the link or share on social media:</Typography>
+          <div style={{ display: 'flex', justifyContent: 'center', marginTop: '16px' }}>
+            <Button
+              startIcon={<FileCopyIcon />}
+              onClick={copyLinkToClipboard}
+              color="primary"
+            >
+              Copy Link
+            </Button>
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'center', marginTop: '16px' }}>
+            <IconButton onClick={handleShareToFacebook}>
+              <img src={FacebookImg} alt="Facebook" className={classes.socialMediaIcon} />
+            </IconButton>
+            <IconButton onClick={handleShareToTwitter}>
+              <img src={XTwitterImg} alt="Twitter" className={classes.socialMediaIcon} />
+            </IconButton>
+            <IconButton onClick={handleShareToWhatsapp}>
+              <img src={WhatsappImg} alt="Whatsapp" className={classes.socialMediaIcon} />
+            </IconButton>
+            <IconButton onClick={handleShareToEmail}>
+        <img src={MailImg} alt="Email" className={classes.socialMediaIcon} />
+      </IconButton>
+          </div>
+        </DialogContent>
+        <DialogActions className={classes.dialogActions}>
+          <Button onClick={handleCloseShareDialog} color="primary">
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
+
     </div>
   );
 };
