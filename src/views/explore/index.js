@@ -1,20 +1,19 @@
-import React, { useState } from 'react';
-import { Grid, Card, CardMedia, CardContent, Typography, IconButton } from '@material-ui/core';
+import React, { useEffect } from 'react';
+import { Grid, Card, CardMedia, CardContent, Typography, IconButton, CircularProgress } from '@material-ui/core';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import { makeStyles } from '@material-ui/core/styles';
-import { useHistory } from 'react-router-dom'; // Assuming you're using react-router for navigation
-import { BACKEND_HOST } from '../../api';
+import { useHistory } from 'react-router-dom';
+import { BACKEND_HOST } from '../../api'; // Adjust this path if necessary
+import { useDispatch, useSelector } from 'react-redux';
+import { showMusicPlayer } from '../../store/actions'; // Adjust import paths
+import { fetchExploreMusicData } from '../../store/exploreMusicActions';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: theme.spacing(4),
     backgroundColor: '#f5f5f5',
     minHeight: '100vh',
-  },
-  albumTitle: {
-    fontWeight: 'bold',
-    marginBottom: theme.spacing(2),
   },
   card: {
     borderRadius: 16,
@@ -58,56 +57,29 @@ const useStyles = makeStyles((theme) => ({
   downloadButton: {
     color: theme.palette.secondary.main,
   },
+  loader: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    minHeight: '100vh',
+  },
 }));
 
 const ExploreMusicPage = () => {
   const classes = useStyles();
   const history = useHistory();
-  const [currentSong, setCurrentSong] = useState(null);
-  const [audio] = useState(new Audio());
+  const dispatch = useDispatch();
 
-  const musicData = [
-    {
-      id: 93,
-      title: "Time's Melody Unbound",
-      created_date: '2024-09-22T08:46:35',
-      song_items: [
-        {
-          id: 150,
-          cover_img: 'images/image_372dc6c9-24cf-400f-a1c2-e828668c3a95.jpeg',
-          visual_desc: 'An abstract hourglass with dreamlike colors and flowing sand',
-          variation: 'Conceptual exploration of time',
-          lyrics: 'Time flows as a river...',
-          audio_stream_url: 'https://example.com/song1.mp3',
-          audio_download_url: 'https://example.com/download/song1.mp3',
-        },
-        {
-          id: 151,
-          cover_img: 'images/image_a86de437-1280-4266-9c06-382cd9708156.jpeg',
-          visual_desc: 'Mountain ranges at dawn',
-          variation: 'Nature-inspired harmonic',
-          lyrics: 'The dawn breaks on the mountains...',
-          audio_stream_url: 'https://example.com/song2.mp3',
-          audio_download_url: 'https://example.com/download/song2.mp3',
-        },
-      ],
-    },
-    // Add more albums with song items as needed
-  ];
+  const { exploreMusic, loading, error } = useSelector((state) => state.exploreMusic);
 
-  // Flatten the song items from all albums
-  const allSongs = musicData.flatMap((album) => album.song_items);
+  useEffect(() => {
+    dispatch(fetchExploreMusicData()); // Fetch explore music data on mount
+    console.log(exploreMusic)
+  }, [dispatch]);
 
   // Play audio
   const handlePlay = (song) => {
-    if (currentSong === song.id) {
-      audio.pause();
-      setCurrentSong(null);
-    } else {
-      audio.src = song.audio_stream_url;
-      audio.play();
-      setCurrentSong(song.id);
-    }
+    dispatch(showMusicPlayer(song)); // Pass the item to the player
   };
 
   // Redirect to song detail page
@@ -115,10 +87,27 @@ const ExploreMusicPage = () => {
     history.push(`/songs?code=${id}`);
   };
 
+  if (loading) {
+    return (
+      <div className={classes.loader}>
+        <CircularProgress />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className={classes.loader}>
+        <Typography variant="h6" color="error">{error}</Typography>
+      </div>
+    );
+  }
+
   return (
     <div className={classes.root}>
-      <Grid container spacing={4}>
-        {allSongs.map((song) => (
+    <Grid container spacing={4}>
+      {exploreMusic.map((album) => (
+        album.song_items.map((song) => (
           <Grid item xs={12} sm={6} md={3} key={song.id}>
             <Card className={classes.card} onClick={() => handleCardClick(song.id)}>
               <CardMedia
@@ -137,9 +126,9 @@ const ExploreMusicPage = () => {
 
               <div className={classes.songCard} onClick={(e) => e.stopPropagation()}>
                 <div className={classes.songInfo}>
-                  <Typography className={classes.songTitle} variant="subtitle1">
-                    {song.variation}
-                  </Typography>
+                  {/* <Typography className={classes.songTitle} variant="subtitle1">
+                    {song.variation.substring(0, 20)}
+                  </Typography> */}
                 </div>
                 <IconButton
                   className={classes.playButton}
@@ -147,15 +136,20 @@ const ExploreMusicPage = () => {
                 >
                   <PlayArrowIcon />
                 </IconButton>
-                <IconButton className={classes.downloadButton} href={song.audio_download_url} download>
+                <IconButton 
+                  className={classes.downloadButton} 
+                  href={song.audio_download_url} 
+                  download
+                >
                   <GetAppIcon />
                 </IconButton>
               </div>
             </Card>
           </Grid>
-        ))}
-      </Grid>
-    </div>
+        ))
+      ))}
+    </Grid>
+  </div>
   );
 };
 

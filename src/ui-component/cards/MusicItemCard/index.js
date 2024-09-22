@@ -40,6 +40,7 @@ const MusicItemCard = ({item}) => {
     const dispatch = useDispatch();
 
     const handleCardClick = () => {
+        console.log(item)
         dispatch(showMusicPlayer(item)); // Pass the item to the player
     };
 

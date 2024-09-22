@@ -626,3 +626,28 @@ export const GenerateTranscript = async (audioUrl) => {
     throw error; // Rethrow the error for handling in the calling function
   }
 };
+
+
+
+export const GetExploreSongs = async () => {
+  const requestOptions = {
+    method: 'GET',
+    redirect: 'follow',
+  };
+
+  try {
+    const response = await fetch(`${BACKEND_LINK}/get-latest-songs`, requestOptions);
+
+    // Check if the response is ok (status in the range 200-299)
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    // Parse the JSON response
+    const result = await response.json();
+    return result; // Return the parsed result
+  } catch (error) {
+    console.error('Error fetching explore songs:', error);
+    throw error; // Rethrow the error for further handling if needed
+  }
+};
