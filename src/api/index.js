@@ -651,3 +651,23 @@ export const GetExploreSongs = async () => {
     throw error; // Rethrow the error for further handling if needed
   }
 };
+
+
+export const GetAllSongs = async () => {
+  try {
+    const response = await fetch(`${BACKEND_LINK}/get-all-songs`, {
+      method: "GET",
+      redirect: "follow",
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error: ${response.status} - ${response.statusText}`);
+    }
+
+    const result = await response.json();
+    return result; // Return the parsed JSON data
+  } catch (error) {
+    console.error("Error fetching songs:", error);
+    throw error; // Rethrow the error for handling in the calling function
+  }
+};
