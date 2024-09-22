@@ -595,3 +595,34 @@ export const GetGenreByLyrics = async (lyrics, setMusicStyle) => {
     console.error(error);
   }
 };
+
+
+export const GenerateTranscript = async (audioUrl) => {
+  const myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+
+  const raw = JSON.stringify({
+    "audio_url": audioUrl // Use the provided audio URL
+  });
+
+  const requestOptions = {
+    method: "POST",
+    headers: myHeaders,
+    body: raw,
+    redirect: "follow"
+  };
+
+  try {
+    const response = await fetch(`${BACKEND_LINK}/transcribe/`, requestOptions);
+    
+    if (!response.ok) {
+      throw new Error(`Error: ${response.statusText}`);
+    }
+
+    const result = await response.json(); // Parse the JSON response
+    return result; // Return the result containing the transcript
+  } catch (error) {
+    console.error("Error fetching transcript:", error);
+    throw error; // Rethrow the error for handling in the calling function
+  }
+};

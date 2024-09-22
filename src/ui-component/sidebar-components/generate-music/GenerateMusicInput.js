@@ -8,7 +8,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import MusicNoteIcon from '@material-ui/icons/MusicNote';
 import Switch from '@material-ui/core/Switch';
 import ErrorAlert from '../../../functions/ErrorAlert';
-import { GenerateMusicBySongDesc, AudioStreamingAPI, GenerateTextVariations, GenerateMusicImage, AddSongDescAPI, AddSongDescItemAPI, GenerateSongByCustomLyrics, GenerateChatGPTLyricsForCustomLyrics, GenerateTextVariationsForCustomLyrics, AddSongCustomLyricsAPI, shortenLyrics, containsEnglish, GetGenreByLyrics } from '../../../api';
+import { GenerateMusicBySongDesc, AudioStreamingAPI, GenerateTextVariations, GenerateMusicImage, AddSongDescAPI, AddSongDescItemAPI, GenerateSongByCustomLyrics, GenerateChatGPTLyricsForCustomLyrics, GenerateTextVariationsForCustomLyrics, AddSongCustomLyricsAPI, shortenLyrics, containsEnglish, GetGenreByLyrics, GenerateTranscript } from '../../../api';
 
 import { useDispatch , useSelector} from 'react-redux';
 import { addSong  , setLoadingSongGeneration } from '../../../store/musicActions'; // Import the action to add a song
@@ -52,6 +52,9 @@ const GenerateMusicInput = () => {
   const handleChange = (event) => {
     setSwitchSingType(event.target.checked);
   };
+
+  const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
 
   // Generate Song by description
   const handleSubmitSongDescription = async () => {
@@ -115,11 +118,15 @@ const GenerateMusicInput = () => {
       const songId = addSongResponse.responseData.id;
       console.log("Song successfully added:", addSongResponse.responseData);
 
+      // Wait for 15 seconds before adding song items
+      await delay(65000);
+
       // --------------------- Add Song Items sequentially ------------------
       for (let index = 0; index < audioUrls.length; index++) {
 
         //  Inluclude download & save audio_download_url
-        
+        const transcriptionResponse = await GenerateTranscript(audioUrls[index]);
+        const transLyrics = transcriptionResponse.transcript; // Extracting the transcript text
 
         const songItem = {
           cover_img: musicImageResult.file_paths[index], // Set image from generated result
@@ -130,12 +137,13 @@ const GenerateMusicInput = () => {
           generated_song_id: Number.parseInt(songId),
           clip_id: audioUrls[index].split('/').pop().replace('.mp3', ''), // Ensure this matches your clip_id extraction logic
           genre: null,        // Optional
-          lyrics: null  // Optional
+          lyrics: transLyrics  // Optional
         };
 
         try {
           // Save Song Items
           const result = await AddSongDescItemAPI(songItem);
+          // await delay(3000);
 
           console.log("Song item added successfully:", result);
 
