@@ -78,8 +78,15 @@ const ExploreMusicPage = () => {
   }, [dispatch]);
 
   // Play audio
-  const handlePlay = (song) => {
-    dispatch(showMusicPlayer(song)); // Pass the item to the player
+  const handlePlay = (song, album) => {
+    console.log(song)
+    console.log(album)
+    const item = {
+      created_date:album.created_date,
+      title:album.title,
+      songItem:song
+    }
+    dispatch(showMusicPlayer(item)); // Pass the item to the player
   };
 
   // Redirect to song detail page
@@ -116,7 +123,7 @@ const ExploreMusicPage = () => {
                 title={song.visual_desc}
               />
               <CardContent className={classes.content}>
-                <Typography variant="h6">{song.variation}</Typography>
+                <Typography variant="h6">{song.variation.substring(0, 100) + '..'}</Typography>
                 {song.lyrics && (
                   <Typography variant="body2" color="textSecondary">
                     {song.lyrics.substring(0, 50)}...
@@ -132,7 +139,7 @@ const ExploreMusicPage = () => {
                 </div>
                 <IconButton
                   className={classes.playButton}
-                  onClick={() => handlePlay(song)}
+                  onClick={() => handlePlay(song, album)}
                 >
                   <PlayArrowIcon />
                 </IconButton>
