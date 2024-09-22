@@ -41,13 +41,9 @@ const Routes = () => {
                         <MainRoutes />
 
                         {user == null ? (
-
                             <Redirect exact  to="/login" />
-
                         ) : (
-
                             <Redirect exact  to="/dashboard" />
-
                         )}
                            
                     </>
