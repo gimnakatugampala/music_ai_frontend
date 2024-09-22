@@ -1,12 +1,13 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Grid, Card, CardMedia, CardContent, Typography, IconButton, CircularProgress } from '@material-ui/core';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
+import PauseIcon from '@material-ui/icons/Pause';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from 'react-router-dom';
-import { BACKEND_HOST } from '../../api'; // Adjust this path if necessary
+import { BACKEND_HOST } from '../../api';
 import { useDispatch, useSelector } from 'react-redux';
-import { showMusicPlayer } from '../../store/actions'; // Adjust import paths
+import { showMusicPlayer } from '../../store/actions';
 import { fetchExploreMusicData } from '../../store/exploreMusicActions';
 
 const useStyles = makeStyles((theme) => ({
@@ -23,6 +24,9 @@ const useStyles = makeStyles((theme) => ({
       transform: 'translateY(-5px)',
       cursor: 'pointer',
     },
+  },
+  highlightedCard: {
+    border: `2px solid ${theme.palette.primary.main}`, // Highlight border color
   },
   media: {
     height: 150,
@@ -47,10 +51,6 @@ const useStyles = makeStyles((theme) => ({
     flex: 1,
     marginLeft: theme.spacing(2),
   },
-  songTitle: {
-    fontWeight: 500,
-    color: '#333',
-  },
   playButton: {
     color: theme.palette.primary.main,
   },
@@ -71,25 +71,27 @@ const ExploreMusicPage = () => {
   const dispatch = useDispatch();
 
   const { exploreMusic, loading, error } = useSelector((state) => state.exploreMusic);
+  
+  const [playingSongId, setPlayingSongId] = useState(null);
 
   useEffect(() => {
-    dispatch(fetchExploreMusicData()); // Fetch explore music data on mount
-    console.log(exploreMusic)
+    dispatch(fetchExploreMusicData());
   }, [dispatch]);
 
-  // Play audio
   const handlePlay = (song, album) => {
-    console.log(song)
-    console.log(album)
-    const item = {
-      created_date:album.created_date,
-      title:album.title,
-      songItem:song
+    if (playingSongId === song.id) {
+      setPlayingSongId(null);
+    } else {
+      setPlayingSongId(song.id);
+      const item = {
+        created_date: album.created_date,
+        title: album.title,
+        songItem: song,
+      };
+      dispatch(showMusicPlayer(item));
     }
-    dispatch(showMusicPlayer(item)); // Pass the item to the player
   };
 
-  // Redirect to song detail page
   const handleCardClick = (id) => {
     history.push(`/songs?code=${id}`);
   };
@@ -112,51 +114,52 @@ const ExploreMusicPage = () => {
 
   return (
     <div className={classes.root}>
-    <Grid container spacing={4}>
-      {exploreMusic.map((album) => (
-        album.song_items.map((song) => (
-          <Grid item xs={12} sm={6} md={3} key={song.id}>
-            <Card className={classes.card} onClick={() => handleCardClick(song.id)}>
-              <CardMedia
-                className={classes.media}
-                image={`${BACKEND_HOST}${song.cover_img}` || 'placeholder.jpg'}
-                title={song.visual_desc}
-              />
-              <CardContent className={classes.content}>
-                <Typography variant="h6">{song.variation.substring(0, 100) + '..'}</Typography>
-                {song.lyrics && (
-                  <Typography variant="body2" color="textSecondary">
-                    {song.lyrics.substring(0, 50)}...
-                  </Typography>
-                )}
-              </CardContent>
+      <Grid container spacing={4}>
+        {exploreMusic.map((album) =>
+          album.song_items.map((song) => (
+            <Grid item xs={12} sm={6} md={3} key={song.id}>
+              <Card 
+                className={`${classes.card} ${playingSongId === song.id ? classes.highlightedCard : ''}`} 
+                onClick={() => handleCardClick(song.id)}
+              >
+                <CardMedia
+                  className={classes.media}
+                  image={`${BACKEND_HOST}${song.cover_img}` || 'placeholder.jpg'}
+                  title={song.visual_desc}
+                />
+                <CardContent className={classes.content}>
+                  <Typography variant="h6">{song.variation.substring(0, 100) + '..'}</Typography>
+                  {song.lyrics && (
+                    <Typography variant="body2" color="textSecondary">
+                      {song.lyrics.substring(0, 50)}...
+                    </Typography>
+                  )}
+                </CardContent>
 
-              <div className={classes.songCard} onClick={(e) => e.stopPropagation()}>
-                <div className={classes.songInfo}>
-                  {/* <Typography className={classes.songTitle} variant="subtitle1">
-                    {song.variation.substring(0, 20)}
-                  </Typography> */}
+                <div className={classes.songCard} onClick={(e) => e.stopPropagation()}>
+                  <div className={classes.songInfo}>
+                    {/* Optional: Add additional song info here */}
+                  </div>
+                  <IconButton
+                    className={classes.playButton}
+                    onClick={() => handlePlay(song, album)}
+                  >
+                    {playingSongId === song.id ? <PauseIcon /> : <PlayArrowIcon />}
+                  </IconButton>
+                  <IconButton 
+                    className={classes.downloadButton} 
+                    href={song.audio_download_url} 
+                    download
+                  >
+                    <GetAppIcon />
+                  </IconButton>
                 </div>
-                <IconButton
-                  className={classes.playButton}
-                  onClick={() => handlePlay(song, album)}
-                >
-                  <PlayArrowIcon />
-                </IconButton>
-                <IconButton 
-                  className={classes.downloadButton} 
-                  href={song.audio_download_url} 
-                  download
-                >
-                  <GetAppIcon />
-                </IconButton>
-              </div>
-            </Card>
-          </Grid>
-        ))
-      ))}
-    </Grid>
-  </div>
+              </Card>
+            </Grid>
+          ))
+        )}
+      </Grid>
+    </div>
   );
 };
 
