@@ -61,7 +61,7 @@ export const SignUpUser = async(rawData,setbtnLoading) =>{
         Cookies.set('music_ai_user', JSON.stringify(updatedRawData))
 
         setTimeout(() => {
-          window.location.href = "/"
+          window.location.href = "/dashboard"
         }, 2000);
 
 
@@ -110,7 +110,7 @@ fetch(`${BACKEND_LINK}/signin/`, requestOptions)
       Cookies.set('music_ai_user', JSON.stringify(updatedRawData))
 
       setTimeout(() => {
-        window.location.href = "/"
+        window.location.href = "/dashboard"
       }, 2000);
 
       return
@@ -158,7 +158,7 @@ fetch(`${BACKEND_LINK}/google-auth/`, requestOptions)
       Cookies.set('music_ai_user', JSON.stringify(updatedRawData))
 
       setTimeout(() => {
-        window.location.href = "/"
+        window.location.href = "/dashboard"
       }, 2000);
 
       return  

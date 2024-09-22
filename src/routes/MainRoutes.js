@@ -1,37 +1,24 @@
-import React, {lazy} from 'react';
-import {Route, Switch, useLocation} from 'react-router-dom';
-
+import React, { lazy } from 'react';
+import { Route, Switch, useLocation, Redirect } from 'react-router-dom';
 import MainLayout from './../layout/MainLayout';
 
-
 const DashboardDefault = lazy(() => import('../views/dashboard/index'));
-
-const TableBasic = lazy(() => import('../views/forms/tables/TableBasic'));
-const TableDense = lazy(() => import('../views/forms/tables/TableDense'));
-
-const UtilsTypography = lazy(() => import('../views/utilities/typography'));
-const UtilsColor = lazy(() => import('../views/utilities/color'));
-const UtilsShadow = lazy(() => import('../views/utilities/shadow'));
-const UtilsMaterialIcons = lazy(() => import('../views/utilities/icons/MaterialIcons'));
-const UtilsTablerIcons = lazy(() => import('../views/utilities/icons/TablerIcons'));
-
+const ExplorePage = lazy(() => import('../views/explore/index'));
+const SearchPage = lazy(() => import('../views/search/index'));
 
 const MainRoutes = () => {
     const location = useLocation();
 
     return (
-        <Route
-            path={[
-                '/dashboard'
-            ]}
-        >
-            <MainLayout showBreadcrumb={true}>
-                <Switch location={location} key={location.pathname}>
-                        <Route path="/dashboard" component={DashboardDefault} />
-
-                </Switch>
-            </MainLayout>
-        </Route>
+        <MainLayout showBreadcrumb={true}>
+            <Switch location={location} key={location.pathname}>
+                <Route path="/dashboard" component={DashboardDefault} />
+                <Route path="/explore" component={ExplorePage} />
+                <Route path="/search" component={SearchPage} />
+                {/* Add a catch-all route if necessary */}
+                {/* <Redirect to="/dashboard" /> Fallback for unmatched routes */}
+            </Switch>
+        </MainLayout>
     );
 };
 
