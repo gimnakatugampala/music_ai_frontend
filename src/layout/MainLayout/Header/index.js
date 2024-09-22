@@ -58,8 +58,8 @@ const useStyles = makeStyles((theme) => ({
         },
     },
     iconImage: {
-        width: 40,  // Reduced size of the icon
-        height: 40, // Reduced size of the icon
+        width: 30,  // Reduced size of the icon
+        height: 30, // Reduced size of the icon
     }
 }));
 
