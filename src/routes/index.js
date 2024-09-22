@@ -36,7 +36,7 @@ const Routes = () => {
                 <Switch>
                     {/* Public Routes */}
                     
-                    {user ==null &&  <Route path="/register" component={AuthenticationRoutes} /> }
+                    {user ==null &&  <Route path="/login" component={AuthenticationRoutes} /> }
 
                     {/* Protected Routes */}
                     {user ? (
