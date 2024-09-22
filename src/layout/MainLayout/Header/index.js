@@ -4,6 +4,7 @@ import { Avatar, ButtonBase, Hidden, makeStyles, IconButton, Typography } from '
 // Icons
 import { IconMenu2 } from '@tabler/icons';
 import ExploreIcon from '@material-ui/icons/Explore';
+import HomeIcon from '@material-ui/icons/Home';
 
 import SearchIcon from '@material-ui/icons/Search';
 
@@ -75,6 +76,18 @@ const Header = (props) => {
             {/* Middle Section: Explore & Search */}
             <div className={classes.grow} />
             <div className={classes.iconSection}>
+                {/* Home Link */}
+                <IconButton
+                    component="a"
+                    href="/dashboard"
+                    className={classes.iconButton}
+                >
+                    <HomeIcon />
+                    <Typography variant="body1" className={classes.linkText}>
+                        Home
+                    </Typography>
+                </IconButton>
+
                 {/* Explore Link */}
                 <IconButton
                     component="a"

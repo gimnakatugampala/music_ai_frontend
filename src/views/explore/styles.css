@@ -1,0 +1,57 @@
+/* General Styles */
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', sans-serif;
+    background-color: #fafafa;
+    color: #333;
+}
+
+/* App Container */
+.app-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Sections */
+.genres-section, .trending-section, .circular-genres-section {
+    padding: 50px 0;
+}
+
+/* Circular Genres Section */
+.circular-genres {
+    position: relative;
+    width: 400px;
+    height: 400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Style for Each Circular Item */
+.circular-item {
+    position: absolute;
+    font-size: 18px;
+    color: #673ab7;
+    transform-origin: 200px center;
+    transition: transform 0.3s, color 0.3s;
+}
+
+.circular-item:hover {
+    color: #512da8;
+    transform: scale(1.2);
+}
+
+/* Positioning Each Item in a Circular Path */
+.circular-item-0 { transform: rotate(0deg) translate(200px); }
+.circular-item-1 { transform: rotate(36deg) translate(200px); }
+.circular-item-2 { transform: rotate(72deg) translate(200px); }
+.circular-item-3 { transform: rotate(108deg) translate(200px); }
+.circular-item-4 { transform: rotate(144deg) translate(200px); }
+.circular-item-5 { transform: rotate(180deg) translate(200px); }
+.circular-item-6 { transform: rotate(216deg) translate(200px); }
+.circular-item-7 { transform: rotate(252deg) translate(200px); }
+.circular-item-8 { transform: rotate(288deg) translate(200px); }
+.circular-item-9 { transform: rotate(324deg) translate(200px); }

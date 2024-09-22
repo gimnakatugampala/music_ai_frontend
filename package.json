@@ -40,6 +40,7 @@
         "react-toastify": "^10.0.5",
         "redux": "^4.0.5",
         "redux-thunk": "^3.1.0",
+        "styled-components": "^6.1.13",
         "stylis-plugin-rtl": "^2.0.2",
         "yup": "^0.32.9"
     },
