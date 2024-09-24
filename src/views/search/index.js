@@ -16,6 +16,10 @@ import FacebookImg from '../../assets/images/icons/facebook.png'; // Facebook im
 import WhatsappImg from '../../assets/images/icons/whatsapp.png'; // Facebook image
 import MailImg from '../../assets/images/icons/mail.png'; // Facebook image
 
+
+import { saveAs } from 'file-saver';
+
+
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: theme.spacing(4),
@@ -143,10 +147,6 @@ const SearchPage = () => {
     history.push(`/songs?code=${code}`);
   };
 
-  const handleDownload = (song) => {
-    // Implement download logic here
-    console.log(`Downloading: ${song.title}`);
-  };
 
   const handleShare = (song) => {
     setSelectedSong(song);
@@ -183,6 +183,11 @@ const SearchPage = () => {
     const subject = encodeURIComponent(`Check out this song: ${selectedSong.title}`);
     const body = encodeURIComponent(`I found this song you might like: ${songLink}`);
     window.open(`mailto:?subject=${subject}&body=${body}`, '_blank');
+  };
+
+  
+  const handleDownload = (audioDownloadUrl) => {
+    saveAs(audioDownloadUrl, `music_${Date.now()}.mp3`); // Replace 'song.mp3' with the desired filename
   };
 
   if (loading) {
@@ -246,7 +251,7 @@ const SearchPage = () => {
               className={classes.actionButton} 
               onClick={(e) => { 
                 e.stopPropagation(); 
-                handleDownload(song); 
+                handleDownload(song.audio_download_url)
               }}
             >
               <DownloadIcon />

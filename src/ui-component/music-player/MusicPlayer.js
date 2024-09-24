@@ -9,6 +9,11 @@ import { hideMusicPlayer } from '../../store/actions';
 import './styles.css';
 import CalculateDateTime from '../../functions/CalculateDateTime';
 
+import DownloadIcon from '@material-ui/icons/GetApp'; 
+
+
+import { saveAs } from 'file-saver';
+
 
 const useStyles = makeStyles((theme) => ({
   musicPlayer: {
@@ -37,6 +42,9 @@ const useStyles = makeStyles((theme) => ({
     opacity: 0, // Initially hidden
     transition: 'opacity 0.3s ease-in',
   },
+  downloadIcon: {
+    color:'#fff'
+  }
 }));
 
 const MusicPlayer = () => {
@@ -128,6 +136,10 @@ const MusicPlayer = () => {
     }
   }, [currentSong]);
 
+  const handleDownload = (audioDownloadUrl) => {
+    saveAs(audioDownloadUrl, `music_${Date.now()}.mp3`); // Replace 'song.mp3' with the desired filename
+  };
+
   return (
     <div className={`${classes.musicPlayer} ${isVisible ? classes.musicPlayerVisible : ''}`}>
       <Box p={1} className='row'>
@@ -149,7 +161,22 @@ const MusicPlayer = () => {
               <div className="artist">
                 <i>{CalculateDateTime(currentSong?.created_date)}</i>
               </div>
+
+              <div  className='col-md-2'>
+
+            <IconButton 
+           
+              onClick={(e) => { 
+                e.stopPropagation(); 
+                handleDownload(currentSong.songItem.audio_download_url)
+              }}
+            >
+              <DownloadIcon  className={classes.downloadIcon} />
+            </IconButton>
+              </div>
+
             </div>
+
           </div>
         </div>
 
