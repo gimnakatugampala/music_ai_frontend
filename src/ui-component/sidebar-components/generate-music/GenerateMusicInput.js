@@ -323,11 +323,14 @@ const GenerateMusicInput = () => {
     setmusicStyle(genre); // Set the clicked genre in the input field
   };
 
-
+const [loadingTranscription, setloadingTranscription] = useState(false)
 
   // Song Desc - Audio Upload
   const handleFileUpload = async (event) => {
     const file = event.target.files[0];
+
+    setloadingTranscription(true)
+
     
     // Create a new FormData object and append the file
     const formData = new FormData();
@@ -355,6 +358,8 @@ const GenerateMusicInput = () => {
       // Assuming the transcript is returned in the result
       // You can set the transcript or perform other actions
       setSongDesc(transcriptResult.transcript);
+
+      setloadingTranscription(false)
 
 
 
@@ -608,11 +613,11 @@ const GenerateMusicInput = () => {
         </IconButton>
       </Box>
 
-      {/* {loading ? (
-        <Typography variant="body1">Transcribing audio...</Typography>
-      ) : (
-        <Typography variant="body1">{transcript ? `Transcript: ${transcript}` : ""}</Typography>
-      )} */}
+        {loadingTranscription && (
+          <Box mx={"auto"} my={2}>
+            <Typography variant="body2">Transcribing audio...</Typography>
+          </Box>
+        )}
 
             <TextField
               id="outlined-multiline-static"
