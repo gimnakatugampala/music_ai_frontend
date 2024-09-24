@@ -188,11 +188,11 @@ const GenerateMusicInput = () => {
 
       dispatch(setLoadingSongGeneration(true)); // Start loading
 
-      let textVariationResult;
+      
 
 
       //  IF if it is english launch chatgpt lyrics ---------------
-      if(containsEnglish(lyrics)){
+
 
         // Step 1: Generate ChatGPT Lyrics for Custom Lyrics
         const processedLyrics = await GenerateChatGPTLyricsForCustomLyrics(lyrics);
@@ -202,15 +202,10 @@ const GenerateMusicInput = () => {
   
             // Generate text variations based on updated lyrics
         // Step 2: Generate Text Variations for Custom Lyrics
-        textVariationResult = await GenerateTextVariationsForCustomLyrics(updatedLyrics);
+        let textVariationResult = await GenerateTextVariationsForCustomLyrics(updatedLyrics);
 
 
-      }else{
-
-
-        textVariationResult = await GenerateTextVariationsForCustomLyrics(lyrics);
-      }
-
+   
 
 
 
@@ -473,6 +468,175 @@ const [loadingTranscription, setloadingTranscription] = useState(false)
   };
   
 
+  // Custom Lryics - Audio Upload
+  const handleFileUploadCustomLyrics = async (event) =>{
+
+     const file = event.target.files[0];
+
+    setloadingTranscription(true)
+
+    
+    // Create a new FormData object and append the file
+    const formData = new FormData();
+    formData.append("file", file); // Appending the file that was uploaded
+  
+    try {
+      // Upload the audio file first
+      const uploadResponse = await fetch(`${BACKEND_LINK}/upload-audio/`, {
+        method: "POST",
+        body: formData,
+      });
+  
+      if (!uploadResponse.ok) {
+        throw new Error("Failed to upload audio file");
+      }
+  
+      // Parse the response to get the file URL
+      const { file_url } = await uploadResponse.json();
+      console.log("Audio file uploaded successfully:", file_url);
+  
+      // Now that the file is uploaded, call the transcription API with the file URL
+      const transcriptResult = await GenerateTranscript(file_url); // Use the URL returned from the backend
+      console.log("Transcription result:", transcriptResult);
+  
+      // Assuming the transcript is returned in the result
+      // You can set the transcript or perform other actions
+      setloadingTranscription(false)
+
+
+
+    
+     
+      try {
+
+        dispatch(setLoadingSongGeneration(true)); // Start loading
+        //  IF if it is english launch chatgpt lyrics ---------------
+  
+  
+          // Step 1: Generate ChatGPT Lyrics for Custom Lyrics
+          const processedLyrics = await GenerateChatGPTLyricsForCustomLyrics(transcriptResult.transcript);
+          const updatedLyrics = processedLyrics.result.data.json.lyricsOutput; // Extract lyricsOutput from the API response
+    
+          console.log("Updated Lyrics from ChatGPT API:", updatedLyrics);
+    
+              // Generate text variations based on updated lyrics
+          // Step 2: Generate Text Variations for Custom Lyrics
+          let textVariationResult = await GenerateTextVariationsForCustomLyrics(updatedLyrics);
+  
+  
+     
+  
+  
+  
+      // Extract visuals for music image generation
+      const visuals = [
+          textVariationResult.result.data.json.outputs[0]?.visual,
+          textVariationResult.result.data.json.outputs[1]?.visual
+      ];
+  
+        // Call APIs concurrently
+        const [audioUrls, musicImageResult] = await Promise.all([
+          GenerateSongByCustomLyrics(transcriptResult.transcript, musicStyle, textVariationResult.result.data.json.outputs[0]?.title),
+          GenerateMusicImage({ "visuals": visuals }),
+        ]);
+    
+         // After all APIs have resolved, handle the results
+        setAudioUrls(audioUrls); // Assuming you want to store audio URLs in state
+        console.log("Generated audio URLs:", audioUrls);
+    
+        settextVariations(textVariationResult); // Set text variations
+        console.log("Generated text variations:", textVariationResult);
+    
+        setgeneratedImages(musicImageResult); // Set generated images
+        console.log("Generated music images:", musicImageResult);
+    
+      // Usage in your song items mapping
+      const newSong = {
+        id: Date.now(),
+        title: title == "" ?  textVariationResult.result.data.json.outputs[0]?.title : `${textVariationResult.result.data.json.outputs[0]?.title} (${title})`,
+        created_date: new Date().toISOString(),
+        song_items: audioUrls.map((streamUrl, index) => {
+          const clip_id = streamUrl.split('/').pop().replace('.mp3', '');
+      
+          return {
+            id: index + 1,
+            cover_img: musicImageResult.file_paths[index],
+            visual_desc: textVariationResult.result.data.json.outputs[index]?.visual || "A description of the song's visual elements.",
+            variation: textVariationResult.result.data.json.outputs[index]?.variation || "Original",
+            audio_stream_url: `https://audiopipe.suno.ai/?item_id=${clip_id}`, // Use the blob URL for playback
+            audio_download_url: `https://audiopipe.suno.ai/?item_id=${clip_id}`, // Same for download
+            generated_song_id: index + 1,
+            clip_id: clip_id
+          };
+        }),
+      };
+      
+      console.log(newSong);
+  
+      dispatch(addSong(newSong));
+  
+      dispatch(setLoadingSongGeneration(false)); 
+  
+      // ------------- Save Song ---------------
+  
+      const addSongResponse = await AddSongCustomLyricsAPI(newSong, transcriptResult.transcript);
+  
+      if (addSongResponse.responseCode === "200") {
+        const songId = addSongResponse.responseData.id;
+        console.log("Song successfully added:", addSongResponse.responseData);
+  
+        // --------------------- Add Song Items sequentially ------------------
+        for (let index = 0; index < audioUrls.length; index++) {
+  
+          //  Inluclude download & save audio_download_url
+          
+  
+          const songItem = {
+            cover_img: musicImageResult.file_paths[index], // Set image from generated result
+            visual_desc: textVariationResult.result.data.json.outputs[index]?.visual || "A description of the song's visual elements.",
+            variation: textVariationResult.result.data.json.outputs[index]?.variation || "Original",
+            audio_stream_url: audioUrls[index],
+            audio_download_url: audioUrls[index],
+            generated_song_id: Number.parseInt(songId),
+            clip_id: audioUrls[index].split('/').pop().replace('.mp3', ''), // Ensure this matches your clip_id extraction logic
+            genre: musicStyle,        // Optional
+            lyrics: transcriptResult.transcript  // Optional
+          };
+  
+          try {
+            // Save Song Items
+            const result = await AddSongDescItemAPI(songItem);
+  
+            console.log("Song item added successfully:", result);
+  
+          } catch (error) {
+            console.error("Failed to add song item:", error);
+          }
+        }
+  
+        console.log("All song items added successfully.");
+      } else {
+        ErrorAlert("Failed to add song.");
+        dispatch(setLoadingSongGeneration(false)); // Start loading
+      }
+  
+  
+    
+      } catch (error) {
+        console.error("Error in handleSubmitSongDescription:", error);
+        dispatch(setLoadingSongGeneration(false)); // Start loading
+        ErrorAlert("Error generating music.");
+      }
+
+    }catch (error) {
+      console.error("Error in handleSubmitSongDescription:", error);
+      dispatch(setLoadingSongGeneration(false)); // Start loading
+      ErrorAlert("Error generating music.");
+      setloadingTranscription(false)
+    }
+      
+  }
+
 
   return (
     <div>
@@ -486,6 +650,28 @@ const [loadingTranscription, setloadingTranscription] = useState(false)
 
         {switchSingType ? (
           <>
+
+
+
+  <Box display="flex" justifyContent="space-between" alignItems="center" my={2}>
+        <Button
+          variant="outlined"
+          startIcon={<CloudUploadIcon />}
+          component="label"
+        >
+          Upload Audio File
+          <input type="file" hidden onChange={handleFileUploadCustomLyrics} />
+        </Button>
+
+  
+      </Box>
+
+      {loadingTranscription && (
+          <Box mx={"auto"} my={2}>
+            <Typography variant="body2">Transcribing audio...</Typography>
+          </Box>
+        )}
+
             <TextField
               id="outlined-multiline-static"
               fullWidth
@@ -597,7 +783,7 @@ const [loadingTranscription, setloadingTranscription] = useState(false)
 
       {/* ADD UPLOAD AUDIO FILE */}
 
-<Box display="flex" justifyContent="space-between" alignItems="center" my={2}>
+  <Box display="flex" justifyContent="space-between" alignItems="center" my={2}>
         <Button
           variant="outlined"
           startIcon={<CloudUploadIcon />}
