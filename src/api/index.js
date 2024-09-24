@@ -2,7 +2,7 @@ import ErrorToast from "../ui-component/toast/ErrorToast";
 import SuccessToast from "../ui-component/toast/SuccessToast";
 import Cookies from "js-cookie";
 
-const BACKEND_LINK = "http://127.0.0.1:8000"
+export const BACKEND_LINK = "http://127.0.0.1:8000"
 export const BACKEND_HOST = "http://127.0.0.1:8000/"
 
 const MUSIC_AI_TOKEN = Cookies.get('MUSIC_AI_TOKEN')
@@ -692,5 +692,35 @@ export const GetSongByID = async (songItemId) => {
   } catch (error) {
     console.error("Error fetching song item:", error);
     throw error; // Rethrow error for further handling if needed
+  }
+};
+
+
+export const UploadAudioFile = async (file) => {
+  // Create a FormData object and append the uploaded file
+  const formData = new FormData();
+  formData.append("file", file); // Use the file passed as a parameter
+
+  const requestOptions = {
+    method: "POST",
+    body: formData,
+    redirect: "follow",
+  };
+
+  try {
+    const response = await fetch(`${BACKEND_LINK}/upload-audio/`, requestOptions);
+
+    if (!response.ok) {
+      throw new Error("Failed to upload audio file");
+    }
+
+    const result = await response.json(); // Assuming the response is JSON
+    console.log("Upload successful:", result);
+
+    return result; // Returning the result for further usage
+
+  } catch (error) {
+    console.error("Error uploading file:", error);
+    throw error; // Rethrowing the error for further error handling if needed
   }
 };
