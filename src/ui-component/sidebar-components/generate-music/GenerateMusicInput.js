@@ -20,6 +20,10 @@ import StopIcon from "@material-ui/icons/Stop";
 
 
 
+
+
+
+
 const genres = [
   "Pop", "Rock", "Hip-Hop", "Country", "Jazz", "Classical", "Blues", 
   "Electronic", "Reggae", "Folk", "Latin", "Metal", "Punk", "Alternative", 
@@ -646,43 +650,66 @@ const [loadingTranscription, setloadingTranscription] = useState(false)
   const [recordedAudioUrl, setRecordedAudioUrl] = useState(null); // Renamed from audioUrl
   const mediaRecorderRef = useRef(null);
 
-  // Function to start recording
-  const startRecording = async () => {
-    setIsRecording(true);
-    setRecordedChunks([]); // Reset recorded chunks
+ // Function to start recording
+ const startRecording = async () => {
+  setIsRecording(true);
+  setRecordedChunks([]);
 
-    // Request user permission to record audio
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    const mediaRecorder = new MediaRecorder(stream);
+    mediaRecorderRef.current = mediaRecorder;
+
+    mediaRecorder.ondataavailable = (event) => {
+      setRecordedChunks((prev) => [...prev, event.data]);
+    };
+
+    mediaRecorder.start();
+  } catch (error) {
+    console.error("Error starting recording:", error);
+  }
+};
+
+// Function to stop recording and handle upload & transcription
+const stopRecording = () => {
+  setIsRecording(false);
+  mediaRecorderRef.current.stop();
+
+  mediaRecorderRef.current.onstop = async () => {
+    // Use the 'audio/webm' format for the Blob
+    const audioBlob = new Blob(recordedChunks, { type: "audio/webm" });
+    const audioUrl = URL.createObjectURL(audioBlob);
+    setRecordedAudioUrl(audioUrl);
+
+    // Prepare the form data for uploading the recorded audio
+    const formData = new FormData();
+    formData.append("file", audioBlob, `${Date.now()}.webm`);
+
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const mediaRecorder = new MediaRecorder(stream);
-      mediaRecorderRef.current = mediaRecorder;
+      // Upload the audio file
+      const uploadResponse = await fetch(`${BACKEND_LINK}/upload-audio/`, {
+        method: "POST",
+        body: formData,
+      });
 
-      // Collect data as it's being recorded
-      mediaRecorder.ondataavailable = (event) => {
-        setRecordedChunks((prev) => [...prev, event.data]);
-      };
+      if (!uploadResponse.ok) {
+        const errorResponse = await uploadResponse.text();
+        throw new Error(`Upload failed with status ${uploadResponse.status}: ${errorResponse}`);
+      }
 
-      // Start recording
-      mediaRecorder.start();
+      // Parse the response to get the file URL
+      const { file_url } = await uploadResponse.json();
+      console.log("Audio file uploaded successfully:", file_url);
+
+      // Call the transcription API with the file URL
+      const transcriptResult = await GenerateTranscript(file_url);
+      console.log("Transcription result:", transcriptResult);
+
     } catch (error) {
-      console.error("Error starting recording:", error);
+      console.error("Error during audio upload or transcription:", error);
     }
   };
-
-  // Function to stop recording
-  const stopRecording = () => {
-    setIsRecording(false);
-
-    // Stop the media recorder
-    mediaRecorderRef.current.stop();
-
-    // Create audio blob and URL from the recorded chunks
-    mediaRecorderRef.current.onstop = () => {
-      const audioBlob = new Blob(recordedChunks, { type: "audio/webm" });
-      const audioUrl = URL.createObjectURL(audioBlob);
-      setRecordedAudioUrl(audioUrl); // Set the recorded audio URL
-    };
-  };
+};
 
 
 
@@ -831,18 +858,18 @@ const [loadingTranscription, setloadingTranscription] = useState(false)
 
       {/* ADD UPLOAD AUDIO FILE */}
 
-  <Box display="flex" justifyContent="space-between" alignItems="center" my={2}>
-        <Button
-          variant="outlined"
-          startIcon={<CloudUploadIcon />}
-          component="label"
-        >
-          Upload Audio File
-          <input type="file" hidden onChange={handleFileUpload} />
-        </Button>
+    <Box display="flex" justifyContent="space-between" alignItems="center" my={2}>
+          <Button
+            variant="outlined"
+            startIcon={<CloudUploadIcon />}
+            component="label"
+          >
+            Upload Audio File
+            <input type="file" hidden onChange={handleFileUpload} />
+          </Button>
 
-        {/* ADD FILE RECORD ICON */}
-        <IconButton
+          {/* ADD FILE RECORD ICON */}
+          <IconButton
         color="primary"
         aria-label="Record Audio"
         onClick={isRecording ? stopRecording : startRecording}
@@ -855,7 +882,14 @@ const [loadingTranscription, setloadingTranscription] = useState(false)
           Your browser does not support the audio element.
         </audio>
       )}
-      </Box>
+
+      {/* {transcript && (
+        <Box my={2}>
+          <h4>Transcript:</h4>
+          <p>{transcript}</p>
+        </Box>
+      )} */}
+        </Box>
 
         {loadingTranscription && (
           <Box mx={"auto"} my={2}>
