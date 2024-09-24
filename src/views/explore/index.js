@@ -19,6 +19,9 @@ import FacebookImg from '../../assets/images/icons/facebook.png'; // Facebook im
 import WhatsappImg from '../../assets/images/icons/whatsapp.png'; // Facebook image
 import MailImg from '../../assets/images/icons/mail.png'; // Facebook image
 
+import { saveAs } from 'file-saver';
+
+
 
 
 
@@ -165,6 +168,10 @@ const ExploreMusicPage = () => {
     window.open(`mailto:?subject=${subject}&body=${body}`, '_blank');
   };
 
+  const handleDownload = (audioDownloadUrl) => {
+    saveAs(audioDownloadUrl, `music_${Date.now()}.mp3`); // Replace 'song.mp3' with the desired filename
+  };
+
   if (loading) {
     return (
       <div className={classes.loader}>
@@ -217,7 +224,7 @@ const ExploreMusicPage = () => {
                   </IconButton>
                   <IconButton 
                     className={classes.downloadButton} 
-                    href={song.audio_download_url} 
+                    onClick={() => handleDownload(song.audio_download_url)}
                     download
                   >
                     <GetAppIcon />

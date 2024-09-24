@@ -16,6 +16,9 @@ import HomeIconImg from '../../../assets/images/icons/home.png'
 import SearchIconImg from '../../../assets/images/icons/magnifier.png'
 import ExploreIconImg from '../../../assets/images/icons/compass.png'
 
+import { Link } from 'react-router-dom'; // Import Link from react-router-dom
+
+
 const useStyles = makeStyles((theme) => ({
     grow: {
         flexGrow: 1,
@@ -86,8 +89,8 @@ const Header = (props) => {
             <div className={classes.iconSection}>
                 {/* Home Link */}
                 <IconButton
-                    component="a"
-                    href="/dashboard"
+                     component={Link} // Change component to Link
+                     to="/dashboard" // Use the 'to' prop for navigation
                     className={classes.iconButton}
                 >
                     <img src={HomeIconImg} alt="Home" className={classes.iconImage} />
@@ -95,8 +98,8 @@ const Header = (props) => {
 
                 {/* Explore Link */}
                 <IconButton
-                    component="a"
-                    href="/explore"
+                 component={Link} // Change component to Link
+                 to="/explore" // Use the 'to' prop for navigation
                     className={classes.iconButton}
                 >
                     <img src={ExploreIconImg} alt="Explore" className={classes.iconImage} />
@@ -104,8 +107,8 @@ const Header = (props) => {
 
                 {/* Search Link */}
                 <IconButton
-                    component="a"
-                    href="/search"
+                component={Link} // Change component to Link
+                to="/search" // Use the 'to' prop for navigation
                     className={classes.iconButton}
                 >
                     <img src={SearchIconImg} alt="Search" className={classes.iconImage} />

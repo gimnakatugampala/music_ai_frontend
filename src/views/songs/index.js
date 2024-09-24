@@ -190,15 +190,19 @@ const Index = () => {
                 </Grid>
 
 
-                    <div className='my-3'>
-                      <h5><b>Lyrics</b></h5>
-                      {item.lyrics.split(/,\s*/).map((line, index) => (
-                        <span key={index}>
-                          {line}
-                          {index < item.lyrics.split(/,\s*/).length - 1 && <br />}
-                        </span>
-                      ))}
-                    </div>
+                <div className='my-3'>
+  <h5><b>Lyrics</b></h5>
+  {item.lyrics ? ( // Check if lyrics exists
+    item.lyrics.split(/,\s*/).map((line, index) => (
+      <span key={index}>
+        {line}
+        {index < item.lyrics.split(/,\s*/).length - 1 && <br />}
+      </span>
+    ))
+  ) : ( // If lyrics is not available, show a fallback message
+    <Typography color="textSecondary">No lyrics available.</Typography>
+  )}
+</div>
                   </Grid>
 
 
