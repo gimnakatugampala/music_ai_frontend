@@ -16,6 +16,8 @@ import { addSong  , setLoadingSongGeneration } from '../../../store/musicActions
 
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import MicIcon from '@material-ui/icons/Mic';
+import StopIcon from "@material-ui/icons/Stop";
+
 
 
 const genres = [
@@ -638,6 +640,52 @@ const [loadingTranscription, setloadingTranscription] = useState(false)
   }
 
 
+  // -------------- RECORDING ----------------
+  const [isRecording, setIsRecording] = useState(false);
+  const [recordedChunks, setRecordedChunks] = useState([]); // Renamed from audioChunks
+  const [recordedAudioUrl, setRecordedAudioUrl] = useState(null); // Renamed from audioUrl
+  const mediaRecorderRef = useRef(null);
+
+  // Function to start recording
+  const startRecording = async () => {
+    setIsRecording(true);
+    setRecordedChunks([]); // Reset recorded chunks
+
+    // Request user permission to record audio
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mediaRecorder = new MediaRecorder(stream);
+      mediaRecorderRef.current = mediaRecorder;
+
+      // Collect data as it's being recorded
+      mediaRecorder.ondataavailable = (event) => {
+        setRecordedChunks((prev) => [...prev, event.data]);
+      };
+
+      // Start recording
+      mediaRecorder.start();
+    } catch (error) {
+      console.error("Error starting recording:", error);
+    }
+  };
+
+  // Function to stop recording
+  const stopRecording = () => {
+    setIsRecording(false);
+
+    // Stop the media recorder
+    mediaRecorderRef.current.stop();
+
+    // Create audio blob and URL from the recorded chunks
+    mediaRecorderRef.current.onstop = () => {
+      const audioBlob = new Blob(recordedChunks, { type: "audio/webm" });
+      const audioUrl = URL.createObjectURL(audioBlob);
+      setRecordedAudioUrl(audioUrl); // Set the recorded audio URL
+    };
+  };
+
+
+
   return (
     <div>
       <Box>
@@ -794,9 +842,19 @@ const [loadingTranscription, setloadingTranscription] = useState(false)
         </Button>
 
         {/* ADD FILE RECORD ICON */}
-        <IconButton color="primary" aria-label="Record Audio">
-          <MicIcon />
-        </IconButton>
+        <IconButton
+        color="primary"
+        aria-label="Record Audio"
+        onClick={isRecording ? stopRecording : startRecording}
+      >
+        {isRecording ? <StopIcon /> : <MicIcon />}
+      </IconButton>
+
+      {recordedAudioUrl && (
+        <audio controls src={recordedAudioUrl}>
+          Your browser does not support the audio element.
+        </audio>
+      )}
       </Box>
 
         {loadingTranscription && (
