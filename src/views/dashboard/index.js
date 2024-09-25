@@ -30,9 +30,9 @@ const Dashboard = () => {
         {img:'https://api.riffusion.com/storage/v1/object/public/images/private/12142022-22d2-4e85-bc4e-da38e090b1c1.jpg'}
     ])
 
-    useEffect(() => {
-        GenerateImage()
-    }, [])
+    // useEffect(() => {
+    //     GenerateImage()
+    // }, [])
     
 
     return (
