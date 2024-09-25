@@ -5,6 +5,9 @@ import Cookies from "js-cookie";
 export const BACKEND_LINK = "http://127.0.0.1:8000"
 export const BACKEND_HOST = "http://127.0.0.1:8000/"
 
+// export const BACKEND_LINK = "http://62.84.180.172:8000"
+// export const BACKEND_HOST = "http://62.84.180.172:8000/"
+
 const MUSIC_AI_TOKEN = Cookies.get('MUSIC_AI_TOKEN')
 
 
