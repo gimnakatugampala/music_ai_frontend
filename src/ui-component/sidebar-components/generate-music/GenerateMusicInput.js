@@ -869,7 +869,7 @@ const stopRecording = () => {
           </Button>
 
           {/* ADD FILE RECORD ICON */}
-          <IconButton
+          {/* <IconButton
         color="primary"
         aria-label="Record Audio"
         onClick={isRecording ? stopRecording : startRecording}
@@ -881,7 +881,7 @@ const stopRecording = () => {
         <audio controls src={recordedAudioUrl}>
           Your browser does not support the audio element.
         </audio>
-      )}
+      )} */}
 
       {/* {transcript && (
         <Box my={2}>
