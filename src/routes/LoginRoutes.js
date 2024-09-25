@@ -14,9 +14,7 @@ const LoginRoutes = () => {
             <MinimalLayout>
                 <Switch location={location} key={location.pathname}>
                     <NavMotion>
-
                             <Route path="/login" component={AuthLogin} />
-
                     </NavMotion>
                 </Switch>
             </MinimalLayout>

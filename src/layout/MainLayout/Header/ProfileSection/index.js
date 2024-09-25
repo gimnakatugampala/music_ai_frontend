@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {useSelector} from 'react-redux';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import {
@@ -35,6 +35,7 @@ import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
 import { useDispatch } from 'react-redux';
 import ErrorToast from '../../../../ui-component/toast/ErrorToast';
 import Cookies from 'js-cookie';
+import { CURRENT_USER } from '../../../../api';
 
 const useStyles = makeStyles((theme) => ({
     navContainer: {
@@ -120,6 +121,8 @@ const ProfileSection = () => {
     const [value, setValue] = React.useState('');
     const [notification, setNotification] = React.useState(false);
     const [selectedIndex] = React.useState(1);
+    const [profileImgSrc, setProfileImgSrc] = useState(User1); // Initial state set to default image
+
 
     const user = useSelector((state) => state.user.user);
 
@@ -135,7 +138,8 @@ const ProfileSection = () => {
             ErrorToast("User logged logout")
 
             setTimeout(() => {
-                window.location.reload()
+                // window.location.reload()
+                window.location.href = "/login"
             }, 1500);
 
 
@@ -162,7 +166,53 @@ const ProfileSection = () => {
         prevOpen.current = open;
     }, [open]);
 
-    const profileImgSrc = user == null ? User1 :  user.profile_img;
+    // const profileImgSrc = user == null ? User1 :  user.profile_img;
+  // Effect to load profile image from cookies or fallback to default
+
+  function debounce(func, wait) {
+    let timeout;
+    return function (...args) {
+        const context = this;
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(context, args), wait);
+    };
+}
+
+// Usage example
+const loadProfileImage = debounce((url) => {
+    setProfileImgSrc(url);
+}, 300);
+
+
+useEffect(() => {
+    try {
+        const userCookie = Cookies.get('music_ai_user');
+        if (userCookie) {
+            const user = JSON.parse(userCookie);
+            if (user && user.profile_img) {
+                const imgUrl = user.profile_img
+                loadProfileImage(imgUrl); // Call debounced image loader
+            }
+        }
+    } catch (error) {
+        console.error('Error parsing user cookie:', error);
+    }
+}, []);
+
+useEffect(() => {
+    try {
+        const userCookie = Cookies.get('music_ai_user'); 
+        if (userCookie) {
+            const user = JSON.parse(userCookie);
+            if (user && user.profile_img) {
+                const imgUrl = user.profile_img.startsWith('http') ? user.profile_img : `https://${user.profile_img}`;
+                setProfileImgSrc(imgUrl); // Set the profile image
+            }
+        }
+    } catch (error) {
+        console.error('Error parsing user cookie:', error);
+    }
+}, []);
 
     return (
         user != null && 
@@ -174,10 +224,13 @@ const ProfileSection = () => {
                     <Avatar
                         src={profileImgSrc}
                         className={classes.headerAvtar}
+                        onError={() => setProfileImgSrc(User1)} // Fallback to default image on error
                         ref={anchorRef}
                         aria-controls={open ? 'menu-list-grow' : undefined}
                         aria-haspopup="true"
                         color="inherit"
+                        referrerPolicy="no-referrer" 
+                        crossOrigin="anonymous" 
                     />
                 }
                 label={<IconSettings stroke={1.5} size="1.5rem" color={theme.palette.primary.main} />}
