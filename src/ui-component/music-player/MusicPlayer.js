@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
   },
   closeButton: {
     position: 'absolute', // Position absolutely
-    top: '-43%',          // Align 10px from the top
+    top: '-50%',          // Align 10px from the top
     right: '-48%',       // Align 10px from the right
     color: '#fff',        // White color for contrast
     zIndex: 1001,    // Higher than the music player itself
