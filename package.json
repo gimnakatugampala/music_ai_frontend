@@ -13,6 +13,7 @@
         "@react-oauth/google": "^0.12.1",
         "@tabler/icons": "^1.39.1",
         "apexcharts": "^3.26.0",
+        "axios": "^1.7.7",
         "clsx": "^1.1.1",
         "date-fns": "^2.21.1",
         "file-saver": "^2.0.5",
@@ -83,5 +84,6 @@
         "immutable": "^4.3.0",
         "prettier": "^2.8.7",
         "sass": "^1.53.0"
-    }
+    },
+    "proxy": "http://api.musicaiapp.online:8000"
 }

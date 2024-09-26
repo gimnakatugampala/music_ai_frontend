@@ -159,12 +159,14 @@ const GenerateMusicInput = () => {
 
         } catch (error) {
           console.error("Failed to add song item:", error);
+          dispatch(setLoadingSongGeneration(false)); 
         }
       }
 
       console.log("All song items added successfully.");
     } else {
       ErrorAlert("Failed to add song.");
+      dispatch(setLoadingSongGeneration(false)); 
     }
 
 
@@ -172,6 +174,7 @@ const GenerateMusicInput = () => {
     } catch (error) {
       console.error("Error in handleSubmitSongDescription:", error);
       ErrorAlert("Error generating music.");
+      dispatch(setLoadingSongGeneration(false)); 
     }
   };
 
@@ -298,6 +301,7 @@ const GenerateMusicInput = () => {
 
         } catch (error) {
           console.error("Failed to add song item:", error);
+          dispatch(setLoadingSongGeneration(false)); 
         }
       }
 
@@ -617,6 +621,7 @@ const [loadingTranscription, setloadingTranscription] = useState(false)
   
           } catch (error) {
             console.error("Failed to add song item:", error);
+            dispatch(setLoadingSongGeneration(false)); 
           }
         }
   
