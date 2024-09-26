@@ -2,11 +2,11 @@ import ErrorToast from "../ui-component/toast/ErrorToast";
 import SuccessToast from "../ui-component/toast/SuccessToast";
 import Cookies from "js-cookie";
 
-export const BACKEND_LINK = "http://127.0.0.1:8000"
-export const BACKEND_HOST = "http://127.0.0.1:8000/"
+// export const BACKEND_LINK = "http://127.0.0.1:8000"
+// export const BACKEND_HOST = "http://127.0.0.1:8000/"
 
-// export const BACKEND_LINK = "http://api.musicaiapp.online:8000"
-// export const BACKEND_HOST = "http://api.musicaiapp.online:8000/"
+export const BACKEND_LINK = "http://api.musicaiapp.online:8000"
+export const BACKEND_HOST = "http://api.musicaiapp.online:8000/"
 
 // export const BACKEND_LINK = "https://62.84.180.172:8000"
 // export const BACKEND_HOST = "https://62.84.180.172:8000/"

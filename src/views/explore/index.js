@@ -22,9 +22,6 @@ import MailImg from '../../assets/images/icons/mail.png'; // Facebook image
 import { saveAs } from 'file-saver';
 
 
-
-
-
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: theme.spacing(4),
@@ -193,7 +190,7 @@ const ExploreMusicPage = () => {
       <Grid container spacing={4}>
         {exploreMusic.map((album) =>
           album.song_items.map((song) => (
-            <Grid item xs={12} sm={6} md={3} key={song.id}>
+            <Grid item xs={12} sm={6} md={4} key={song.id}>
               <Card 
                 className={`${classes.card} ${playingSongId === song.id ? classes.highlightedCard : ''}`} 
                 onClick={() => handleCardClick(song.id)}
