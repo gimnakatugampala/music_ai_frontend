@@ -708,3 +708,7 @@ aside #song #song-number{
    }
 }
 /*End of responsiveness*/
+
+.artist .music-date{
+	font-size: '12px';
+}

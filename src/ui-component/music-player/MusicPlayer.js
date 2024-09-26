@@ -147,40 +147,48 @@ const MusicPlayer = () => {
           <CloseIcon style={{ fontSize: '40px', backgroundColor: '#5e35b1', borderRadius: '50%' }} />
         </span>
 
-        <div className='col-md-4'>
-          <div className='row'>
-            <div id="music-icon" className='col-md-6'>
-              <img 
-                src={currentSong?.songItem?.cover_img ? `${BACKEND_HOST}${currentSong.songItem.cover_img}` : "default-image-url"} 
-                alt="music-icon" 
-              />
-            </div>
-            <div id='music-title' className='col-md-6'>
+        <div className='col-md-5'>
+      <div className='row'>
+        <div id="music-icon" className='col-md-6'>
+          <img 
+            src={currentSong?.songItem?.cover_img ? `${BACKEND_HOST}${currentSong.songItem.cover_img}` : "default-image-url"} 
+            alt="music-icon" 
+          />
+        </div>
+
+        <div id='music-title' className='col-md-6'>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            {/* Title and Date */}
+            <div>
               <b>{currentSong?.title || "Default Title"}</b>
               <br />
               <div className="artist">
-                <i>{CalculateDateTime(currentSong?.created_date)}</i>
+                <i>
+                  <span className='music-date' style={{ fontSize: '13px' }}>
+                    {CalculateDateTime(currentSong?.created_date)}
+                  </span>
+                </i>
               </div>
-
-              <div  className='col-md-2'>
-
-            <IconButton 
-           
-              onClick={(e) => { 
-                e.stopPropagation(); 
-                handleDownload(currentSong.songItem.audio_download_url)
-              }}
-            >
-              <DownloadIcon  className={classes.downloadIcon} />
-            </IconButton>
-              </div>
-
             </div>
 
+            {/* Download Button */}
+            <div>
+              <IconButton 
+                onClick={(e) => { 
+                  e.stopPropagation(); 
+                  handleDownload(currentSong.songItem.audio_download_url);
+                }}
+              >
+                <DownloadIcon className={classes.downloadIcon} />
+              </IconButton>
+            </div>
           </div>
         </div>
+      </div>
+    </div>
 
-        <div className='col-md-8'>
+
+        <div className='col-md-7'>
           {isVisible && (
             <AudioPlayer
               autoPlay
