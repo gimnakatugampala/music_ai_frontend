@@ -232,7 +232,7 @@ const Login = () => {
                                     </Typography>
                                     {/* <Box mt={1} width='100%'>
                                     <Button
-                                        disableElevation
+                                        disableElevatio
                                         fullWidth
                                         size="large"
                                         type="submit"
