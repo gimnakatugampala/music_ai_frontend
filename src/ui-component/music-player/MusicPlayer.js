@@ -147,7 +147,7 @@ const MusicPlayer = () => {
           <CloseIcon style={{ fontSize: '40px', backgroundColor: '#5e35b1', borderRadius: '50%' }} />
         </span>
 
-        <div className='col-md-5'>
+        <div className='col-md-4'>
       <div className='row'>
         <div id="music-icon" className='col-md-6'>
           <img 
@@ -188,7 +188,7 @@ const MusicPlayer = () => {
     </div>
 
 
-        <div className='col-md-7'>
+        <div className='col-md-8'>
           {isVisible && (
             <AudioPlayer
               autoPlay
